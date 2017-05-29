@@ -1,0 +1,24 @@
+#peg {
+	top: 200px;
+	left: 200px;
+	height: 100px;
+	width: 100px;
+	border-radius: 50%;
+	position: absolute;
+	background-color: lightYellow;
+}
+
+.orc {
+	top: 100px;
+	left: 100px;
+	height: 100px;
+	width: 100px;
+	border-radius: 50%;
+	position: absolute;
+	background-color: Red;
+}
+
+#game-board {
+	height: 500px;
+	width: 1000px;
+}
