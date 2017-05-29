@@ -1,11 +1,32 @@
  var Game = function() {
 
- // The render function. It will be called 60/sec
-    function render(){ //? For each new game 
-    }
 
-    var orc = new Orc();
-    var counter = 0;
+   // Game settings
+   var settings ={}
+   settings.gravity = 5;
+
+   // World
+   var frameCounter = 0;
+   var assets = [];
+
+
+   function spawnOrc(){
+     assets.push(new Orc(settings));
+   }
+
+
+ // The render function. It will be called 60/sec
+    function render(){ //? For each new game
+      for(var i=0;i<assets.length;i++){
+        assets[i].render();
+      }
+
+      if(frameCounter%300 === 0 ){
+        spawnOrc();
+      }
+
+      frameCounter++;
+    }
 
     window.requestAnimFrame = (function(){
       return  window.requestAnimationFrame       ||
@@ -20,10 +41,7 @@
             (function animloop(){
               requestAnimFrame(animloop);
               render(); // recursive
-              console.log(counter++);
             })();
-
-            
 }
 
 var g = new Game();

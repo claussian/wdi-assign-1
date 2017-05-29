@@ -1,4 +1,4 @@
-var Orc = function () { // spawn orcs
+var Orc = function(settings) { // spawn orcs
 
 	var orcElement = null;
 
@@ -6,31 +6,41 @@ var Orc = function () { // spawn orcs
 
 	function destroyOrc() {
         // Remove the orc when it goes past the screen
-    }
+  }
 
-    function init() {
-      // create();
-      var w = parseInt(window.innerWidth); // assign orc's x position 
-      var x = Math.floor(Math.random()*w);
-      orcElement = document.createElement('div');
-      orcElement.className = 'orc';
-      orcElement.style.top = '0px';
-      orcElement.style.left = x + "px";
-      var body = document.getElementById('game-board');
-      body.appendChild(orcElement);
-    //this.render = function(interactions){ //
-    //  move(interactions); //
-    //} // 
+	/*
+	 *	Move the Orc
+	 */
+	 function move(){
+		 var orcRect = orcElement.getBoundingClientRect();
+
+		 // What to do once we hit the bottom of the screen ?
+		 orcElement.style.top = (orcRect.top + settings.gravity) + 'px';
+
+	 }
+
+	/*
+	 *	Crate a new orc
+	 */
+	function create(){
+		var w = parseInt(window.innerWidth); // assign orc's x position
+		var x = Math.floor(Math.random()*w);
+		orcElement = document.createElement('div');
+		orcElement.className = 'orc';
+		orcElement.style.top = '0px';
+		orcElement.style.left = x + "px";
+		var body = document.getElementById('game-board');
+		body.appendChild(orcElement);
+	}
+
+	this.render = function(){
+		move();
+	}
+
+
+  function init() {
+  	create();
 	}
 
 	init();
 }
-
-
-
-
-
-
-
-
-
