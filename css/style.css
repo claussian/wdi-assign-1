@@ -1,12 +1,32 @@
-#peg {
-	top: 200px;
-	left: 200px;
-	height: 100px;
-	width: 100px;
-	border-radius: 50%;
+#fellowship-board {
+	top: 50%;
+	left: 50%;
+	margin-top: -50px;
+	margin-left:-50px;
 	position: absolute;
-	background-color: lightYellow;
 }
+
+.fellowship {
+	height: 150px;
+	width: 150px;
+	border-radius: 20%;
+	background-color: transparent;
+	background-size: cover;
+	background-position: center;
+	border: 0px;
+	float:left;
+	display: inline-block;
+}
+	
+
+#frodo {
+	background-image: url('../images/frodo.png');
+}
+
+#gandalf {
+	background-image: url('../images/gandalf_cartoon.png');
+}
+
 
 .orc {
 	top: 100px;
@@ -15,7 +35,7 @@
 	width: 100px;
 	border-radius: 50%;
 	position: absolute;
-	background-color: Red;
+	background-color: black;
 }
 
 #game-board {

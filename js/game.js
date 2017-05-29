@@ -8,16 +8,23 @@
    // World
    var frameCounter = 0;
    var assets = [];
+   // var fellowshipChain = 
 
 
    function spawnOrc(){
      assets.push(new Orc(settings));
    }
 
+   function startFellowship() {
+    //
+   }
+
+
+
 
  // The render function. It will be called 60/sec
-    function render(){ //? For each new game
-      for(var i=0;i<assets.length;i++){
+    this.render = function (){ //? For each new game
+      for(var i=0;i<assets.length;i++){                             
         assets[i].render();
       }
 
@@ -27,6 +34,8 @@
 
       frameCounter++;
     }
+
+    var self = this;
 
     window.requestAnimFrame = (function(){
       return  window.requestAnimationFrame       ||
@@ -40,7 +49,7 @@
 
             (function animloop(){
               requestAnimFrame(animloop);
-              render(); // recursive
+              self.render(); // recursive
             })();
 }
 
