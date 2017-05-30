@@ -1,3 +1,36 @@
+@font-face {
+font-family: 'First Order';
+font-style: normal;
+font-weight: normal;
+src: url('../assets/first-order/firstv2.woff') format('woff');
+}
+
+@font-face {
+font-family: 'First Order Plain';
+font-style: normal;
+font-weight: normal;
+src: url('../assets/first-order/firstv2p.woff') format('woff');
+}
+
+header h1 {
+	font-family: 'First Order';
+	font-size: 3em;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+header h2 {
+	font-family: 'First Order Plain';
+	font-size: 1.5em;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 700px;
+}
+
+header h2 span {
+	color: gold;
+}
+
 #fellowship-board {
 	top: 400px;
 	left: 400px;
@@ -7,8 +40,8 @@
 }
 
 .fellowship {
-	height: 100px;
-	width: 100px;
+	height: 150px;
+	width: 150px;
 	position: relative;
 	border-radius: 20%;
 	background-color: transparent;
@@ -21,22 +54,29 @@
 	
 
 #frodo {
-	background-image: url('../images/frodo.png');
+	background-image: url('../assets/images/frodo.png');
 }
 
 #gandalf {
-	background-image: url('../images/gandalf_cartoon.png');
+	background-image: url('../assets/images/gandalf_cartoon.png');
+}
+
+#gimli {
+	background-image: url('../assets/images/gimli.png');
 }
 
 
 .orc {
 	top: 100px;
 	left: 100px;
-	height: 100px;
-	width: 100px;
-	border-radius: 50%;
+	height: 150px;
+	width: 150px;
+	/* border-radius: 50%; */
 	position: absolute;
-	background-color: black;
+	/*background-color: black;*/
+	background-image: url('../assets/images/orc.png');
+	background-size: cover;
+	background-position: center;
 }
 
 #game-board {

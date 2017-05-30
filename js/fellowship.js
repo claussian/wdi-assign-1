@@ -3,7 +3,7 @@ var Fellowship = function(settings) {
 	var fellowship;
 	var message = []; // array containing instruction tapes telling dom elements where to go based on index
 	var divSizeCounter = 0;
-	var picSize = 100;
+	var picSize = 150;
 
 	// Interactions: initialize here so that message var can be populated
    	var interaction = {};
@@ -72,15 +72,17 @@ var Fellowship = function(settings) {
 
     /* Function to invoke when key is pressed, rendered per frame */
 
-    function actualizeKey (interactions) {
+    function actualizeKey (interactions, frameCounter) {
 
     	// Count the number of frames that have passed
     	
 
     	/* Store the current key to pass as an argument to perform translation */
 
-    	if (interactions.keychange && divSizeCounter > Math.floor(picSize/settings.speed/2)) { // set a buffer so that keystroke not so sensitive
-    		 
+
+    	if (interactions.keychange) { // && frameCounter % 60 == 0) {   // set a buffer so that keystroke not so sensitive?
+    		
+    		console.log("value init keychange: " + interactions.keychange);
     		// add new instruction tape for the first fellowship element
     		var tape = packer(interactions, Math.floor(picSize/settings.speed));
     		message.unshift(tape);
@@ -88,13 +90,14 @@ var Fellowship = function(settings) {
 
     		//remove previous instruction tape for last fellowship element
     		message.pop();
+
     		console.log("on keychange");
-    		console.log(message[0][0]);
-    		console.log(message[1][0]);
+    		console.log(message[0][0]); // frodo's instruction
+    		console.log(message[1][0]); // gandalf's instruction
 
-    		//reset keychange
+    		//reset keychange ? this is not working ?
     		interactions.keychange = false;
-
+    		console.log("value reset keychange: " + interactions.keychange);
     		//reset counter
     		divSizeCounter = 0;
     	}
@@ -117,8 +120,7 @@ var Fellowship = function(settings) {
 		if (divSizeCounter < (picSize/settings.speed)) {
 			// apply translation instruction tape to each fellowship element
 			for (var i = 0; i < fellowship.length; i++) {
-
-			// translate each fellowship element according to its position and turn, within the keys index
+			// translate each fellowship element according to its position and turn, within the message index
 				move(message[i][divSizeCounter], fellowship[i]);
 				// console.log("within div" + message.length);
 				// console.log(keys[i][divSizeCounter]);
@@ -176,9 +178,9 @@ var Fellowship = function(settings) {
     // }
 
     /* When render is called from game.js [assets], execute these functions RECURSIVELY FRAME-BY-FRAME */
-    this.render = function(interactions) {
+    this.render = function(interactions, frameCounter) {
 
-    	actualizeKey(interactions);
+    	actualizeKey(interactions, frameCounter);
     	
     }
 
