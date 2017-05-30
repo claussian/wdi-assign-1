@@ -19,7 +19,6 @@ var Orc = function(settings) { // orc object
 		 orcElement.style.top = (orcRect.top + settings.gravity) + 'px'; // move it by #gravity* px per frame
 		 if (parseInt(orcElement.style.top) > parseInt(window.innerHeight)) {
 		 	destroyOrc(orcElement);
-		 	console.log(orcElement);
 		 }
 		 	
 	 }
