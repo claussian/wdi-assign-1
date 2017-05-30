@@ -1,14 +1,14 @@
 #fellowship-board {
 	top: 400px;
 	left: 400px;
-	margin-top: -50px;
-	margin-left:-50px;
+	/*margin-top: -50px;
+	margin-left:-50px;*/
 	position: absolute;
 }
 
 .fellowship {
-	height: 150px;
-	width: 150px;
+	height: 100px;
+	width: 100px;
 	position: relative;
 	border-radius: 20%;
 	background-color: transparent;

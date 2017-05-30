@@ -16,9 +16,9 @@
    var interactions = {};
    interactions.up = false;              // Up arrow key pressed
    interactions.down = false;            // Down arrow key pressed
-   interactions.left = false;            // Left arrow key pressed
+   interactions.left = true;            // Left arrow key pressed
    interactions.right = false;           // Right arrow ket pressed
-   interactions.space = false;           // Space key pressed
+   interactions.keychange = false;                // New key pressed
 
 
    function spawnOrc(){
@@ -62,24 +62,28 @@
               interactions.left = false;
               interactions.up = false;
               interactions.down = false;
+              interactions.keychange = true;
               break;
           case "ArrowLeft":
               interactions.left = true;
               interactions.right = false;
               interactions.up = false;
               interactions.down = false;
+              interactions.keychange = true;
               break;
           case "ArrowUp":
               interactions.up = true;
               interactions.down = false;
               interactions.left = false;
               interactions.right = false;
+              interactions.keychange = true;
               break;
           case "ArrowDown":
               interactions.down = true;
               interactions.up = false;
               interactions.left = false;
               interactions.right = false;
+              interactions.keychange = true;
               break;
           default:
               break;
