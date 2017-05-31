@@ -113,11 +113,20 @@
               };
             })();
 
+            var framesToSkip = 60;
+            var counter = 0;
             
-              (function animloop(){
-              requestAnimFrame(animloop);
-              self.render(); // recursive
+            (function animloop(){
+                if (counter < framesToSkip) {
+                counter++;
+                requestAnimFrame(animloop); // recursive
+                return;
+                }
+                self.render();
+                counter = 0;
+                requestAnimFrame(animloop);
             })();
+
             
 
             

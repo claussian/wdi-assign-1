@@ -140,7 +140,7 @@ var Fellowship = function(settings) {
 				// Hit the wall; stop game
 				console.log("Hit wall!");
 				proceed = false;
-				i += fellowship.length; // exit the loop
+				i += fellowship.length; // exit the loop so that subsequent fellowship members do not execute the next move 
 
 			}
 			else {
