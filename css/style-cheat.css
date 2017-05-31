@@ -15,41 +15,49 @@ src: url('../assets/first-order/firstv2p.woff') format('woff');
 header h1 {
 	font-family: 'First Order';
 	font-size: 3em;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	text-align: center;
 }
 
 header h2 {
 	font-family: 'First Order Plain';
 	font-size: 1.5em;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	width: 700px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	text-align: center;
 }
 
 header h2 span {
 	color: gold;
 }
 
-#fellowship-board {
-	top: 500px;
-	left: 500px;
-	/*margin-top: -50px;
-	margin-left:-50px;*/
-	position: absolute;
+table {
+  margin: 0 auto;
+  border: 1px solid black;
+}
+td {
+  width: 80px;
+  height: 80px;
+  text-align: center;
+  font-size: 8em;
+  box-sizing:border-box;
+  background-color: transparent;
+}
+
+td:hover{
+  cursor:pointer;
+}
+
+.empty {
+	border: none;
 }
 
 .fellowship {
-	height: 150px;
-	width: 150px;
-	position: relative;
-	border-radius: 20%;
 	background-color: transparent;
 	background-size: cover;
 	background-position: center;
 	border: 0px;
-	float:left;
-	display: inline-block;
 }
 	
 #gandalf {
@@ -77,36 +85,13 @@ header h2 span {
 }
 
 #legolas {
-	background-image: url('../assets/images/gimli.png');
+	background-image: url('../assets/images/legolas.png');
 }
 
 #merry {
-	background-image: url('../assets/images/gimli.png');
+	background-image: url('../assets/images/meriadoc.png');
 }
 
 #pippin {
 	background-image: url('../assets/images/gimli.png');
-}
-
-
-
-
-
-
-.orc {
-	top: 100px;
-	left: 100px;
-	height: 150px;
-	width: 150px;
-	/* border-radius: 50%; */
-	position: absolute;
-	/*background-color: black;*/
-	background-image: url('../assets/images/orc.png');
-	background-size: cover;
-	background-position: center;
-}
-
-#game-board {
-	height: 500px;
-	width: 1000px;
 }

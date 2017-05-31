@@ -10,8 +10,8 @@
    // World
    var frameCounter = 0;
    var assets = [];
-   var fellowship = new Fellowship(settings); // create new fellowship object
-   assets.push(fellowship);
+   // var fellowship = new Fellowship(settings); // create new fellowship object
+   // assets.push(fellowship);
 
    // Interactions
    var interactions = {};
@@ -22,13 +22,13 @@
    interactions.keyup = false;           // New key released
 
 
-   function spawnOrc() {
-     assets.push(new Orc(settings));
-   }
+   // function spawnOrc() {
+   //   assets.push(new Orc(settings));
+   // }
 
-   function startFellowship() {
-    assets.push(new Fellowship(settings)); // create new fellowship object
-   }
+   // function startFellowship() {
+   //  assets.push(new Fellowship(settings)); // create new fellowship object
+   // }
 
    // Setup event listeners
     function setupEvents() {
@@ -107,7 +107,7 @@
         assets[i].render(interactions, frameCounter);
       }
 
-      if(frameCounter % 300 === 0 ){ // spawn orcs generically
+      if(frameCounter % 5 === 0 ){ // spawn orcs generically
         spawnOrc();
       }
 
@@ -121,7 +121,7 @@
               window.webkitRequestAnimationFrame ||
               window.mozRequestAnimationFrame    ||
               function( callback ){
-                window.setTimeout(callback, 1000 / 60);
+                window.setTimeout(callback, 1000 / 1);
               };
             })();
 

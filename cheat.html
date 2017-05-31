@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Save the Fellowship</title>
+	<link rel="stylesheet" href="css/style-cheat.css">
+	<!-- Daniel Eden animate.css -->
+  	<link rel="stylesheet" href="css/animate.css">
+  	<!-- jQuery -->
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  	<!-- Bootstrap -->
+  	<link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+	<header>
+		<h1>~Save the Fellowship~</h1>
+		<h2>Help Frodo find his friends and reach Mount Doom~~<br>Avoid the orcs and <span>Balrog!</span></h2>
+	</header>
+	<div class="container" id="game-board">
+		<div class="row">
+			<table>
+    			<tbody0>
+      				<tr>
+        				<td data-num="0" class="empty"></td>
+        				<td data-num="1" class="empty"></td>
+        				<td data-num="2" class="empty"></td>
+        				<td data-num="3" class="empty"></td>
+        				<td data-num="4" class="empty"></td>
+        				<td data-num="5" class="empty"></td>
+        				<td data-num="6" class="empty"></td>
+      				</tr>
+    			</tbody0>
+    			<tbody1>
+     			 	<tr>
+        				<td data-num="7" class="empty"></td>
+        				<td data-num="8" class="empty"></td>
+        				<td data-num="9" class="empty"></td>
+        				<td data-num="10" class="empty"></td>
+        				<td data-num="11" class="empty"></td>
+        				<td data-num="12" class="empty"></td>
+      					<td data-num="13" class="empty"></td>
+      				</tr>
+    			</tbody1>
+    			<tbody2>
+      				<tr>
+        				<td data-num="14" class="empty"></td>
+        				<td data-num="15" class="empty"></td>
+        				<td data-num="16" class="empty"></td>
+        				<td data-num="17" class="empty"></td>
+        				<td data-num="18" class="empty"></td>
+        				<td data-num="19" class="empty"></td>
+        				<td data-num="20" class="empty"></td>
+      				</tr>
+    			</tbody2>
+    			<tbody3>
+      				<tr>
+      					<td data-num="21" class="empty"></td>
+      					<td data-num="22" class="empty"></td>
+        				<td data-num="23" class="empty"></td>
+        				<td data-num="24" class="empty"></td>
+        				<td data-num="25" class="empty"></td>
+        				<td data-num="26" class="empty"></td>
+        				<td data-num="27" class="empty"></td>
+      				</tr>
+    			</tbody3>
+    			<tbody4>
+      				<tr>
+      					<td data-num="28" class="empty"></td>
+      					<td data-num="29" class="empty"></td>
+        				<td data-num="30" class="empty"></td>
+        				<td data-num="31" class="empty"></td>
+        				<td data-num="32" class="empty"></td>
+        				<td data-num="33" class="empty"></td>
+        				<td data-num="34" class="empty"></td>
+      				</tr>
+    			</tbody4>
+    			<tbody5>
+     				 <tr>
+      					<td data-num="35" class="empty"></td>
+      					<td data-num="36" class="empty"></td>
+        				<td data-num="37" class="empty"></td>
+        				<td data-num="38" class="empty"></td>
+        				<td data-num="39" class="empty"></td>
+        				<td data-num="40" class="empty"></td>
+        				<td data-num="41" class="empty"></td>
+      				</tr>
+    			</tbody5>
+    			<tbody6>
+     				 <tr>
+      					<td data-num="42" class="empty"></td>
+      					<td data-num="43" class="empty"></td>
+        				<td data-num="44" class="empty"></td>
+        				<td data-num="45" class="fellowship" id="gandalf"></td>
+        				<td data-num="46" class="fellowship" id="frodo"></td>
+        				<td data-num="47" class="fellowship" id="samwise"></td>
+        				<td data-num="48" class="empty"></td>
+      				</tr>
+    			</tbody6>
+  			</table>
+  		</div>
+	</div>
+	<!-- Game js -->
+	<script type="text/javascript" src="js/orc.js"></script>
+	<script type="text/javascript" src="js/fellowship.js"></script>
+  	<script src = "js/game-cheat.js" async></script>
+	<audio id="audio-theme">
+	<source src="assets/aknifeinthedark_theme.mp3" type="audio/mpeg">
+	</audio>
+</body>
+</html>

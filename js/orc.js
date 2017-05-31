@@ -1,19 +1,23 @@
-var Orc = function(settings) { // orc object
+var Orc = function(settings) {
+
+	/* Global variables */
 
 	var orcElement = null;
+
 	var orcCounter = 0;
+	
 	var orcBoard = document.getElementById('orc-board');
-	// orcElement.style.top = orcElement.style.top - 8 + "px"; // can make speed variable
+	
+
+	/* Reference the parent node to remove orc */
 
 	function destroyOrc(orcElement) {
-        // Remove the orc when it goes past the screen
-        orcElement.parentNode.removeChild(orcElement);
+        orcBoard.removeChild(orcElement);
     }
 
-	/*
-	 *	Move the Orc; remove after it goes off the screen
-	 */
-	 function move(){
+	 /*	Move the Orc; remove after it goes off the screen */
+
+	 function move() {
 		 var orcRect = orcElement.getBoundingClientRect(); // get Orc div properties
 
 		 orcElement.style.top = (orcRect.top + settings.gravity) + 'px'; // move it by #gravity* px per frame
@@ -23,9 +27,8 @@ var Orc = function(settings) { // orc object
 		 	
 	 }
 
-	/*
-	 *	Create a new orc
-	 */
+	/* Create a new orc */
+
 	function create() {
 		
 		var w = parseInt(window.innerWidth); // assign orc's x position
@@ -38,7 +41,7 @@ var Orc = function(settings) { // orc object
 		orcBoard.appendChild(orcElement);
 	}
 
-	this.render = function(){
+	this.render = function (){
 		move();
 	}
 

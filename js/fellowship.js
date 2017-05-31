@@ -1,64 +1,93 @@
 var Fellowship = function(settings) {
 
-	var fellowship;
-	var message = []; // array containing instruction tapes telling dom elements where to go based on index
-	var divSizeCounter = 0;
-	var picSize = 150;
+	/* Global variables */
 
-	// Interactions: initialize here so that message var can be populated
+	var fellowship; // initialize fellowship
+
+	var fellowshipR = ['boromir','strider','legolas','gimli','meriadoc','pippin']; // remaining fellowship members
+
+	var fellowBoard = document.getElementById('fellowship-board'); // parent node
+
+	var message = []; // array containing instruction tapes telling dom elements where to go based on index
+
+	var divSizeCounter = 0; // pixel counter to move in units of div width
+
+	var picSize = 150; // in px
+
+	// Browser dimensions
+
+	var w = parseInt(window.innerWidth); 
+    var h = parseInt(window.innerHeight);
+
+	/* Interactions: define here so that message array can be populated on init */
+
    	var interaction = {};
    	interaction.up = false;              // Up arrow key pressed
    	interaction.down = false;            // Down arrow key pressed
    	interaction.left = true;            // Left arrow key pressed
    	interaction.right = false;			// Right arrow key pressed
-   	interaction.keychange = false;		// New key pressed
+   	interaction.keyup = false;			// New key released
 
+   	function wall(fellowElement) {
 
+      var x_right = parseInt(fellowElement.style.left)  + parseInt(fellowElement.style.width);
+      var x_left = parseInt(fellowElement.style.left);
+      var y_top = parseInt(fellowElement.style.top);
+      var y_bottom = parseInt(fellowElement.style.top) + parseInt(fellowElement.style.height);    
+
+      if(y_bottom > h){
+        fellowElement.style.top = (h - parseInt(fellowElement.style.height)) + 'px';
+      }
+
+      if(y_top < -w/2){
+        fellowElement.style.top = '200px';
+      }
+    }
+
+     /* Spawn remaining fellowship members randomly after a certain period of time */
+
+	function createNewFellowship (frameCounter) {
+		// 
+		var fellowNew = fellowElement[Math.floor(Math.random) * fellowElement.length];
+
+		var x = Math.floor(Math.random() * w); // assign fellowship's x position
+		var y = Math.floor(Math.random() * n); // assign felllowship's y position
+
+		fellowNewElement = document.createElement('div');
+		fellowNewElement.className = "fellowship";
+		fellowNewElement.setAttribute("id", fellowNew);
+		fellowNewElement.style.top = y + 'px';
+		fellowNewElement.style.left = x + "px";
+		fellowBoard.appendChild(fellowNewElement);
+
+	}
 
 
     /* Move the fellowship chain by passing a value of interaction */
 
-    function move(message, fellowElement) { // interaction key is local in scope
+    function move(tape, fellowElement) { // interaction key is local in scope
 
-      if(message.up){
+      if(tape.up){
         fellowElement.style.top = parseInt(fellowElement.style.top) - settings.speed + "px";
       }
 
-      if(message.down){
+      if(tape.down){
         fellowElement.style.top = parseInt(fellowElement.style.top) + settings.speed + "px";
       }
 
-      if(message.left){
+      if(tape.left){
         fellowElement.style.left = parseInt(fellowElement.style.left) - settings.speed + "px";
       }
 
-      if(message.right){
+      if(tape.right){
         fellowElement.style.left = parseInt(fellowElement.style.left) + settings.speed + "px";
       }
-      //if(settings.walls){
-      //  wall();
-      // }
+
+      if(settings.wall){
+        wall(fellowElement);
+      }
 
     }
-
-  //   function getCoordinates (fellowElement) {
-  //   	var fellowRect = fellowElement.getBoundingClientRect();
-		// coordFirst.top = fellowRect.top;
-		// coordFirst.left = fellowRect.left;
-		// return coordFirst;
-  //   }
-
-  //   // Evaluate whether to invoke actualise key operation
-  //   function evaluateOperate (working) {
-  //   	return working.length > 0 ? true : false;
-  //   }
-
-    /* Translate the head of the current array */
-
-    // function translateHead (key, array) {
-    // 	move(key, array[0]);
-    // 	array.shift();
-    // }
 
     /* Pack translation operation in units of repeated frames */
 
@@ -70,39 +99,39 @@ var Fellowship = function(settings) {
     	return pack;
     }
 
+
     /* Function to invoke when key is pressed, rendered per frame */
 
     function actualizeKey (interactions, frameCounter) {
 
-    	// Count the number of frames that have passed
-    	
 
-    	/* Store the current key to pass as an argument to perform translation */
+    	/* Execute initial message unshift only when keyup is true */
 
-
-    	if (interactions.keychange) { // && frameCounter % 60 == 0) {   // set a buffer so that keystroke not so sensitive?
+    	if (interactions.keyup) { // && frameCounter % 60 == 0) {   // set a buffer so that keystroke not so sensitive?
     		
-    		console.log("value init keychange: " + interactions.keychange);
+    		console.log("value init keyup: " + interactions.keyup);
+
     		// add new instruction tape for the first fellowship element
     		var tape = packer(interactions, Math.floor(picSize/settings.speed));
+
     		message.unshift(tape);
-    		// console.log("on keychange" + message.length);
 
     		//remove previous instruction tape for last fellowship element
     		message.pop();
 
-    		console.log("on keychange");
-    		console.log(message[0][0]); // frodo's instruction
-    		console.log(message[1][0]); // gandalf's instruction
+    		console.log("on keyup");
+    		console.log(message[0][0]); // gandalf's instruction
+    		console.log(message[1][0]); // frodo's instruction
+    		console.log(message[2][0]); // samwise's instruction
 
-    		//reset keychange ? this is not working ?
-    		interactions.keychange = false;
-    		console.log("value reset keychange: " + interactions.keychange);
-    		//reset counter
+    		//reset keyup ? this is not working ?
+    		interactions.keyup = false;
+
+    		console.log("value reset keyup: " + interactions.keyup);
+
+    		//reset counter for pixel size movement
     		divSizeCounter = 0;
-    	}
-
-    		
+    	}    		
 
     		// // push current key into keys array
     		// keys.push(interactions);
@@ -110,23 +139,24 @@ var Fellowship = function(settings) {
     		// //push current array to list of arrays to be operated on
     		// var current = [];
 
-
-
-    	//	keychange = false; // reset keychange indicator
+    	//	keyup = false; // reset keyup indicator
     	
 		
-		/* Perform translation on each fellowship element in units of 100px */
+		/* Perform translation on each fellowship element in units of 150px */
 
 		if (divSizeCounter < (picSize/settings.speed)) {
+
 			// apply translation instruction tape to each fellowship element
 			for (var i = 0; i < fellowship.length; i++) {
 			// translate each fellowship element according to its position and turn, within the message index
 				move(message[i][divSizeCounter], fellowship[i]);
-				// console.log("within div" + message.length);
-				// console.log(keys[i][divSizeCounter]);
 			}
+
 			divSizeCounter++;
+			// console.log(divSizeCounter);
 		}
+
+		/* Fellowship element has moved its own width, execute next message unshift */
 
 		else {
 			// refresh turn
@@ -137,11 +167,16 @@ var Fellowship = function(settings) {
     		message.unshift(tape);
     		message.pop();
 
+    		console.log("on finish");
+    		console.log(message[0][0]); // gandalf's instruction
+    		console.log(message[1][0]); // frodo's instruction
+    		console.log(message[2][0]); // samwise's instruction
+
+
 			// apply translation instruction tape to each fellowship element
-			for (var i = 0; i < fellowship.length; i++) {
-				move(message[i][divSizeCounter], fellowship[i]);
-				// console.log("Edge of div" + message.length);
-			}
+			//for (var i = 0; i < fellowship.length; i++) {
+			//	move(message[i][divSizeCounter], fellowship[i]);
+			//}
 		}
 
     }
@@ -181,6 +216,8 @@ var Fellowship = function(settings) {
     this.render = function(interactions, frameCounter) {
 
     	actualizeKey(interactions, frameCounter);
+
+    	//createNewFellowship(frameCounter);
     	
     }
 
@@ -191,16 +228,19 @@ var Fellowship = function(settings) {
     	// console.log(fellowship);
     	
     	for (var i = 0; i < fellowship.length; i++) {
-    		fellowship[i].style.top = "100px";
-    		fellowship[i].style.left = "100px";
+    		fellowship[i].style.top = "0px";
+    		fellowship[i].style.left = "0px";
     		// console.log("Top:" + fellowship[i].style.top + " Left:" + fellowship[i].style.left);
+
     		var tape = packer(interaction, Math.floor(picSize/settings.speed));
+
     		message.push(tape);
     		// move(interaction, fellowship[i]); 
     	}
     	console.log("Initial key");
     	console.log(message[0][0]);
     	console.log(message[1][0]);
+    	console.log(message[2][0]);
     }
 
     init();
