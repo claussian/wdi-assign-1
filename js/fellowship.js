@@ -2,7 +2,7 @@ var Fellowship = function(settings) {
 
 	/* Global variables */
 
-	var fellowship; // initialize fellowship
+	var fellowship = ['gandalf', 'frodo','samwise']; // initialize fellowship
 
 	var fellowshipR = ['boromir','strider','legolas','gimli','meriadoc','pippin']; // remaining fellowship members
 

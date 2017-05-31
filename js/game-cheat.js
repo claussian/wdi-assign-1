@@ -7,11 +7,14 @@
    settings.speed = 2;
    settings.wall = true;
 
+
    // World
    var frameCounter = 0;
    var assets = [];
-   // var fellowship = new Fellowship(settings); // create new fellowship object
-   // assets.push(fellowship);
+   var fellowship = new Fellowship(settings); // create new fellowship object
+   assets.push(fellowship);
+
+   var proceed = true;
 
    // Interactions
    var interactions = {};
@@ -26,9 +29,6 @@
    //   assets.push(new Orc(settings));
    // }
 
-   // function startFellowship() {
-   //  assets.push(new Fellowship(settings)); // create new fellowship object
-   // }
 
    // Setup event listeners
     function setupEvents() {
@@ -37,22 +37,7 @@
         var keyName = event.key;
 
         interactions.keyup = true;
-        // switch(keyName) {
-        //   case "ArrowRight":
-        //       interactions.right = false;
-        //       break;
-        //   case "ArrowLeft":
-        //       interactions.left = false;
-        //       break;
-        //   case "ArrowUp":
-        //       interactions.up = false;
-        //       break;
-        //   case "ArrowDown":
-        //       interactions.down = false;
-        //       break;
-        //   default:
-        //       break;
-        //}
+
       });
 
       document.addEventListener('keydown', function(event){
@@ -102,14 +87,17 @@
     this.render = function (){ //? For each new game
 
       // startFellowship(); // fellowship is not supposed to be rendered per cycle
-
-      for(var i = 0; i < assets.length; i++){                             
-        assets[i].render(interactions, frameCounter);
+      console.log("proceed: " + proceed);
+      if (proceed) {
+        for(var i = 0; i < assets.length; i++){                             
+        assets[i].render(interactions, frameCounter, proceed);
+        }
       }
+      
 
-      if(frameCounter % 5 === 0 ){ // spawn orcs generically
-        spawnOrc();
-      }
+      // if(frameCounter % 5 === 0 ){ // spawn orcs generically
+       // spawnOrc();
+      //}
 
       frameCounter++;
     }
@@ -121,15 +109,18 @@
               window.webkitRequestAnimationFrame ||
               window.mozRequestAnimationFrame    ||
               function( callback ){
-                window.setTimeout(callback, 1000 / 1);
+                window.setTimeout(callback, 1000);
               };
             })();
 
-
-            (function animloop(){
+            
+              (function animloop(){
               requestAnimFrame(animloop);
               self.render(); // recursive
             })();
+            
+
+            
 
             init();
 }

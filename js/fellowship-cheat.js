@@ -4,7 +4,7 @@ var Fellowship = function(settings) {
 
 	var fellowship = ['gandalf','frodo','samwise'];
 
-	var fellowshipP = [45,46,47];  // initialize fellowship positions
+	var fellowshipP = [45,46,47];  // fellowship positions
 
 	var fellowshipR = ['boromir','strider','legolas','gimli','merry','pippin']; // remaining fellowship members
 
@@ -25,7 +25,7 @@ var Fellowship = function(settings) {
 	/* Check to see if wall has been hit (illegal interaction while in a certain cell) */
 
 	function wallChecker(instruction, num) {
-		var wall;
+		var wall = [];
 
 		if(instruction.up) {
 			wall = [0,1,2,3,4,5,6];
@@ -69,21 +69,21 @@ var Fellowship = function(settings) {
 
     /* Check which animation to call from Daniel Eden's animate.css */
 
-    function animate(interaction, old) { // interaction key is local in scope
+    function animate(instruction, old) { // interaction key is local in scope
 
-      if(interaction.up){
+      if(instruction.up){
         return old ? "slideOutUp" : "slideInUp";
       }
 
-      if(interaction.down){
+      if(instruction.down){
         return old ? "slideOutDown" : "slideInDown";
       }
 
-      if(interaction.left){
+      if(instruction.left){
         return old ? "slideOutLeft" : "slideInLeft";
       }
 
-      if(interaction.right){
+      if(instruction.right){
         return old ? "slideOutRight" : "slideInRight";
       }
 
@@ -97,7 +97,7 @@ var Fellowship = function(settings) {
     	
     	// get the cell which needs to be changed
     	for (var i = 0; i < cells.length; i++) { 
-    		if (cells[i].getAttribute('data-num') === dataNum) {
+    		if (parseInt(cells[i].getAttribute('data-num')) === dataNum) {
     			cell = cells[i];
     		}
     	}
@@ -105,20 +105,28 @@ var Fellowship = function(settings) {
     	cell.style.animationName = animate(interaction, old); // set animation first
 
     	if (old) { // if old cell, change id to null
-    		cell.setAttribute("id","");
+    		cell.setAttribute("id","null");
+    		cell.className = "empty";
     	}
     	else { // if new cell, change id to the fellowship element
     		cell.setAttribute("id", fellowElement);
+    		cell.className = "fellowship";
     	}	
     	
     }
 
     /* Function to invoke when key is pressed, rendered per frame */
 
-    function actualizeKey(interactions) {
+    function actualizeKey(interactions, frameCounter, proceed) {
     	
+    	console.log(frameCounter);
+
     	if (interactions.keyup) {
-    		// do something
+
+    		message.unshift(interactions);
+    		message.pop();
+
+    		// interactions.keyup = false;
 
     	}
 
@@ -128,8 +136,12 @@ var Fellowship = function(settings) {
 
 			var oldDataNum = document.getElementById(fellowship[i]).getAttribute('data-num');
 
-			if (wallChecker(parseInt(oldDataNum))) {
+			if (wallChecker(interactions, parseInt(oldDataNum))) {
 				// Hit the wall; stop game
+				console.log("Hit wall!");
+				proceed = false;
+				i += fellowship.length; // exit the loop
+
 			}
 			else {
 
@@ -139,26 +151,26 @@ var Fellowship = function(settings) {
 				var newDataNum = move(message[i], parseInt(oldDataNum));
 
 				switchClass(newDataNum, fellowship[i], interactions, false); // new class to turn
-			}
-
-			
-
-			
-			
+			}									
 
 		}
 
     	
     }
 
-    this.render = function () {
-
+    this.render = function (interactions, frameCounter) {
+    	actualizeKey(interactions, frameCounter);
     }
 
     function init() {
     	// board = document.getElementsByTagName("td");
+
+    	// initialise message
+    	for (var i = 0; i < fellowship.length; i++) {
+    		message.push(interaction);
+    	}
     }
 
     init();
-
 }
+

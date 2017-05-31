@@ -51,6 +51,7 @@ td:hover{
 
 .empty {
 	border: none;
+	animation-name: none;
 }
 
 .fellowship {
@@ -58,6 +59,11 @@ td:hover{
 	background-size: cover;
 	background-position: center;
 	border: 0px;
+	animation-name: none;
+}
+
+#null {
+	background-image: none;
 }
 	
 #gandalf {
