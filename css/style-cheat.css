@@ -34,15 +34,21 @@ header h2 span {
 
 table {
   margin: 0 auto;
-  border: 1px solid black;
+  border: 0;
+
+  background-color: transparent;
+  background-image: url('../assets/images/map_opacity40.jpg');
+  background-size: cover;
+  background-position: center;
 }
+
 td {
   width: 80px;
   height: 80px;
   text-align: center;
   font-size: 8em;
   box-sizing:border-box;
-  background-color: transparent;
+  
 }
 
 td:hover{
@@ -56,14 +62,23 @@ td:hover{
 	background-color: transparent;
 	background-size: cover;
 	background-position: center;
-	background-image: none;
 }
 
 .fellowship {
 	background-color: transparent;
 	background-size: cover;
 	background-position: center;
-	border: 0px;
+	border: 0;
+	animation-name: none;
+	animation-duration: 1s;
+}
+
+.orc {
+	background-color: transparent;
+	background-image: url('../assets/images/orc.png');
+	background-size: cover;
+	background-position: center;
+	border: 0;
 	animation-name: none;
 	animation-duration: 1s;
 }

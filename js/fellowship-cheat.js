@@ -2,15 +2,19 @@ var Fellowship = function(settings) {
 
 	/* Global variables */
 
-	var fellowship = ['gandalf','frodo','samwise'];
+	var fellowship = ['gandalf','frodo','samwise']; // initial fellowship members
 
 	// var fellowshipP = [45,46,47];  // fellowship positions
 
 	var fellowshipR = ['boromir','strider','legolas','gimli','merry','pippin']; // remaining fellowship members
 
-	var fellowshipNew = []; // newly spawned fellowship members, move if uncollided
+	var fellowshipNew = []; // newly spawned fellowship members
 
-	var newFellowCounter = {}; // skip a frame for newly spawned members
+	var orcNew = []; // newly spawned orcs, move if uncollided
+
+	var orcIndex = 1; // orc ids to execute pause for newly spawned orcs
+
+	var newOrcCounter = {}; // skip a frame for newly spawned orcs
 
 	var message = []; // array containing instructions telling dom elements where to go based on index
 
@@ -55,7 +59,7 @@ var Fellowship = function(settings) {
 	/* Check for illegal moves. Up cannot be followed by down and vice-versa; ditto left-right */
 
 	function checkIllegalMove(key1, key2) {
-		return (key1.up && key2.down || key1.down && key2.up || key1.right && key2.left || key1.left && key2.right) ? true : false
+		return (key1.up && key2.down || key1.down && key2.up || key1.right && key2.left || key1.left && key2.right || key1.up && key2.up || key1.down && key2.down || key1.left && key2.left || key1.right && key2.right) ? true : false
 	}
 
 	/* Spawn new fellowship members randomly */
@@ -78,17 +82,53 @@ var Fellowship = function(settings) {
     	fellowshipNew.push(fellowshipR.splice(fellowshipR.indexOf(newFellow),1)[0]);
 
     	// add counter to fellowship object
-    	newFellowCounter[newFellow] = 0;
+    	//newFellowCounter[newFellow] = 0;
 
     	console.log("spawned " + newFellow);
 
 	}
 
-	/* Remove newly spawned fellowship member */
-	function removeFellowship(member) {
+	/* Spawn new orcs randomly */
+
+	function spawnOrc() {
+
+		var empty = document.getElementsByClassName("empty"); // get list of empty cells
+
+		topRow = [];
+		for (var i = 0; i < empty.length; i++) { // get empty cells in the top row
+			if (parseInt(empty[i].getAttribute('data-num')) < 6 ) {
+				topRow.push(empty[i]);
+			}
+		}
+
+		var randomEmptyCell = topRow[Math.floor(Math.random() * topRow.length)]; // choose a random cell
+
+		// Change cell class and rotateIn
+		randomEmptyCell.classList.remove("empty"); // remove and add method to trigger animation
+    	randomEmptyCell.classList.add("orc");
+    	var orcId = "orc" + orcIndex;
+    	randomEmptyCell.setAttribute('id', JSON.parse(JSON.stringify(orcId)));
+
+    	randomEmptyCell.style.animationName = "rotateIn";
+
+    	// add counter to orc object
+    	newOrcCounter[JSON.parse(JSON.stringify(orcId))] = 0;
+
+    	console.log("spawned Orc " + orcId);
+
+    	// added new orc
+    	orcNew.push(JSON.parse(JSON.stringify(orcId)));
+
+    	orcIndex ++; 
+
+	}
+
+	/* Remove newly spawned fellowship member or Orc when it hits the wall */
+
+	function removeOrc(member) {
 
 		// get fellowship member to remove
-		var targetCell = document.getElementById(member); // get list of empty cells
+		var targetCell = document.getElementById(member);
 		//console.log(targetCell);
 
 		removeAllClasses(targetCell);
@@ -110,7 +150,7 @@ var Fellowship = function(settings) {
 	/* De-class object completely */
 
 	function removeAllClasses(cell) {
-		classEnum = ['new','fellowship','empty'];
+		classEnum = ['new','fellowship','empty','orc'];
 
 		for (var i = 0; i < classEnum.length; i++) {
 			if(cell.classList.contains(classEnum[i])) {
@@ -120,13 +160,13 @@ var Fellowship = function(settings) {
 
 	}
 
-	/* Detect collision */
+	/* Detect collision. Condition: data-num of intended cell movement and new fellowship member match */
 
-	function headOnCollision(newDataNum) {
+	function headOnCollision(newDataNum, targetClass) {
 		var match = 0;
 		var targetCell_1 = cells[newDataNum];
 		//console.log("new cell", targetCell_1)
-		var targetCell_2 = document.getElementsByClassName("new");
+		var targetCell_2 = document.getElementsByClassName(targetClass);
 		//console.log("snakehead cell", targetCell_2);
 
 		for (var i = 0; i < targetCell_2.length; i++) {
@@ -185,7 +225,7 @@ var Fellowship = function(settings) {
 
     /* Switch the faces of old and new data-num; do not couple the switches yet  */
 
-    function switchClass (dataNum, fellowElement, interaction, old, move) {
+    function switchClass (dataNum, fellowElement, interaction, old, orc) {
     	
     	var cell;
     	
@@ -195,6 +235,8 @@ var Fellowship = function(settings) {
     	
     	// console.log(cell.style.animationName);
 
+    	cell.style.animationName = animate(interaction, old);  // set animation after
+
     	if (old) { // if old cell, change id to null
     		removeAllClasses(cell);						// method to trigger animation 
     		cell.classList.add("empty");
@@ -202,11 +244,15 @@ var Fellowship = function(settings) {
     	}
     	else { // if new cell, change id to the fellowship element
     		removeAllClasses(cell);
-    		cell.classList.add("fellowship");
+    		if (orc) {
+    			cell.classList.add("orc");
+    		}
+    		else {
+    			cell.classList.add("fellowship");
+    		}
     		cell.setAttribute("id", fellowElement);
-    	}
-
-    	cell.style.animationName = animate(interaction, old);  // set animation after
+    		
+    	}   	
     	
     }
 
@@ -228,8 +274,16 @@ var Fellowship = function(settings) {
     	/* Remove new members sporadically if uncaught*/
     	/**********************************************/
 
-    	if (frameCounter % 13 == 0 && fellowshipNew.length > 0) {
-    		randomRemoveFellowship(); 
+    	// if (frameCounter % 13 == 0 && fellowshipNew.length > 0) { // resulted in buggy behaviour where collision is detected just before element is destroyed
+    	// 	randomRemoveFellowship(); 
+    	// }
+
+    	/******************/
+    	/* Spawn new Orcs */
+    	/******************/
+
+    	if (frameCounter % 13 == 0) {
+    		spawnOrc();
     	}
 
 
@@ -276,6 +330,7 @@ var Fellowship = function(settings) {
 
 		for (var i = 0; i < fellowship.length; i++) {
 
+			// console.log(fellowship[i]);
 			var oldDataNum = document.getElementById(fellowship[i]).getAttribute('data-num');
 
 			/******************/
@@ -293,14 +348,14 @@ var Fellowship = function(settings) {
 			else {
 				// translate each fellowship element according to its position and turn, within the message index
 
-				var newDataNum = move(message[i], parseInt(oldDataNum));
+				var newDataNum = move(message[i], parseInt(oldDataNum)); // intended cell to move to
 
 				/***********************/
 				/* COLLISION DETECTION */
 				/***********************/
 
 
-				if (headOnCollision(newDataNum) > 0) {
+				if (headOnCollision(newDataNum, 'new') > 0) {
 					console.log('Hit target!');
 
 					/************************************************/
@@ -323,7 +378,7 @@ var Fellowship = function(settings) {
 
 					message.unshift(keyHistory[0]);
 
-					console.log(message.slice(0,fellowship.length - 1));
+					console.log(message.slice(0,fellowship.length));
 					console.log(fellowship);
 
 					/******************************/
@@ -341,9 +396,9 @@ var Fellowship = function(settings) {
 
 						switchClass(parseInt(newDataNum), fellowship[i], message[i], true, false); // old class to turn
 
-						newnewDataNum = move(message[i], parseInt(newDataNum));
+						newNewDataNum = move(message[i], parseInt(newDataNum));
 
-						switchClass(newnewDataNum, fellowship[i], message[i], false, false) // new class to turn
+						switchClass(newNewDataNum, fellowship[i], message[i], false, false) // new class to turn
 					}
 					
 				}
@@ -362,45 +417,43 @@ var Fellowship = function(settings) {
 
 		}
 
-		/*******************************************************/
-		/* Move newly spawned fellowship members independently */
-		/*******************************************************/
+		/*****************************************/
+		/* Move newly spawned orcs independently */
+		/*****************************************/
 
-		//  if (fellowshipNew.length > 0) { // there are members to move
+		  if (orcNew.length > 0) { // there are orcs to move
 
-		//  	for (var i = 0; i < fellowshipNew.length; i++) {
+		  	for (var i = 0; i < orcNew.length; i++) {
 
-		// 		if (newFellowCounter[fellowshipNew[i]] > 0) { // skip the first frame
+		 		if (newOrcCounter[orcNew[i]] > 0) { // skip the first frame
 
-		// 			var oldDataNum = document.getElementById(fellowshipNew[i]).getAttribute('data-num');
+		 			var oldDataNum = document.getElementById(orcNew[i]).getAttribute('data-num');
 
-		// 			if (wallChecker(down, parseInt(oldDataNum))) {
+		 			if (wallChecker(down, parseInt(oldDataNum))) {
 						
-		// 				console.log("removing " + fellowshipNew[i]); // change the class first
-		// 				removeFellowship(fellowshipNew[i]);
+		 				console.log("removing " + orcNew[i]); // change the class first
+		 				removeOrc(orcNew[i]);
 
-		// 				fellowshipNew.splice(fellowshipNew[i], 1); // remove from array
+		 				orcNew.splice(orcNew[i], 1); // remove from array
 
-		// 			}
+		 			}
 
-		// 			else {
-		// 				// Move down each newly spawned and unappended fellowship element
+		 			else {
+		 				// Move down each newly spawned and unappended orc element
+		 				
+		 				var newDataNum = move(down, parseInt(oldDataNum)); // intended cell destination
 
-		// 				switchClass(parseInt(oldDataNum), fellowshipNew[i], down, true, true); // old class to turn
+		 				switchClass(parseInt(oldDataNum), orcNew[i], down, true, true); // old class to turn
 
-		// 				var newDataNum = move(down, parseInt(oldDataNum));
+		 				switchClass(newDataNum, orcNew[i], down, false, true); // new class to turn
+		 			}
+		 		}
 
-		// 				switchClass(newDataNum, fellowshipNew[i], down, false, true); // new class to turn
-		// 			}
-		// 		}
+		 		newOrcCounter[orcNew[i]] += 1; // add a frame
+		 	}
+		 }
 
-		// 		newFellowCounter[fellowshipNew[i]] += 1; // add a frame
-		// 	}
-		// }
-
-		/**************************************************/
-		/* Newly spawned fellowship members stay in place and disappear after some time*/
-		/**************************************************/
+	
 
 
     }
