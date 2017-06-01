@@ -52,6 +52,7 @@ td:hover{
 .empty {
 	border: none;
 	animation-name: none;
+	animation-duration: .5s;
 }
 
 .fellowship {
@@ -60,6 +61,7 @@ td:hover{
 	background-position: center;
 	border: 0px;
 	animation-name: none;
+	animation-duration: .5s;
 }
 
 #null {

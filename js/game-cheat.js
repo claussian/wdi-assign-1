@@ -34,7 +34,6 @@
     function setupEvents() {
 
       document.addEventListener('keyup', function(event){
-        var keyName = event.key;
 
         interactions.keyup = true;
 
@@ -87,7 +86,7 @@
     this.render = function (){ //? For each new game
 
       // startFellowship(); // fellowship is not supposed to be rendered per cycle
-      console.log("proceed: " + proceed);
+      //console.log("proceed: " + proceed);
       if (proceed) {
         for(var i = 0; i < assets.length; i++){                             
         assets[i].render(interactions, frameCounter, proceed);
@@ -109,7 +108,7 @@
               window.webkitRequestAnimationFrame ||
               window.mozRequestAnimationFrame    ||
               function( callback ){
-                window.setTimeout(callback, 1000);
+                window.setTimeout(callback, 1000 / 60);
               };
             })();
 

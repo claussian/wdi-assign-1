@@ -8,9 +8,17 @@ var Fellowship = function(settings) {
 
 	var fellowshipR = ['boromir','strider','legolas','gimli','merry','pippin']; // remaining fellowship members
 
-	var message = []; // array containing instruction tapes telling dom elements where to go based on index
+	var message = []; // array containing instructions telling dom elements where to go based on index
+
+	var keyHistory = []; // array containing key history
 
 	var cells = document.getElementsByTagName("td"); // enable cell dom elements to be inspected globally
+
+	// var cellIndex = []; // index of cell data-num
+
+	// for (var i = 0; i < cells.length; i++) {
+	// 	cellIndex.push(i);
+	// }
 
 	/* Interactions: define here so that message array can be populated on init */
 
@@ -43,6 +51,11 @@ var Fellowship = function(settings) {
         return wall.indexOf(num) > -1 ? true : false;      
 	}
 
+	/* Check for illegal moves. Up cannot be followed by down and vice-versa; ditto left-right */
+
+	function checkIllegalMove(key1, key2) {
+		return (key1.up && key2.down || key1.down && key2.up || key1.right && key2.left || key1.left && key2.right) ? true : false
+	}
 
 
    	/* Move the fellowship chain by passing a value of instruction and the data-num of the current cell */
@@ -72,19 +85,19 @@ var Fellowship = function(settings) {
     function animate(instruction, old) { // interaction key is local in scope
 
       if(instruction.up){
-        return old ? "slideOutUp" : "slideInUp";
+        return old ? "none" : "slideInUp" //"slideOutUp";
       }
 
       if(instruction.down){
-        return old ? "slideOutDown" : "slideInDown";
+        return old ? "none" : "slideInDown" // slideOutDown";
       }
 
       if(instruction.left){
-        return old ? "slideOutLeft" : "slideInLeft";
+        return old ? "none" : "slideInRight" // "slideOutLeft";
       }
 
       if(instruction.right){
-        return old ? "slideOutRight" : "slideInRight";
+        return old ? "none" : "slideInLeft" // "slideOutRight";
       }
 
     }
@@ -96,21 +109,27 @@ var Fellowship = function(settings) {
     	var cell;
     	
     	// get the cell which needs to be changed
-    	for (var i = 0; i < cells.length; i++) { 
-    		if (parseInt(cells[i].getAttribute('data-num')) === dataNum) {
-    			cell = cells[i];
-    		}
-    	}
+
+    	cell = cells[dataNum];
+
+    	// for (var i = 0; i < cells.length; i++) { 
+    	// 	if (parseInt(cells[i].getAttribute('data-num')) === dataNum) {
+    	// 		cell = cells[i];
+    	// 	}
+    	// }
 
     	cell.style.animationName = animate(interaction, old); // set animation first
+    	// console.log(cell.style.animationName);
 
     	if (old) { // if old cell, change id to null
+    		cell.classList.remove(cell.className); // method to trigger animation
+    		cell.classList.add("empty");
     		cell.setAttribute("id","null");
-    		cell.className = "empty";
     	}
     	else { // if new cell, change id to the fellowship element
+    		cell.classList.remove(cell.className);
+    		cell.classList.add("fellowship");
     		cell.setAttribute("id", fellowElement);
-    		cell.className = "fellowship";
     	}	
     	
     }
@@ -121,16 +140,36 @@ var Fellowship = function(settings) {
     	
     	console.log(frameCounter);
 
+
     	if (interactions.keyup) {
 
-    		message.unshift(interactions);
-    		message.pop();
+    		// push new key to the head of the key history
+    		keyHistory.unshift(interactions);
 
-    		// interactions.keyup = false;
+    		// remove new key if illegal move
+    		if (checkIllegalMove(keyHistory[0], keyHistory[1])) {
+    			keyHistory.shift();
+    		}
+
+    		
+    		console.log("Key pressed!");
+
+    		interactions.keyup = false;
 
     	}
 
-    	/* apply translation instruction tape to each fellowship element */
+    	// update message
+    	message.unshift(keyHistory[0]);
+    	// message.pop();
+
+    	// console.log("current valid key");
+    	// console.log(keyHistory[0]);
+
+    	console.log("message");
+    	console.log(message[0], message[1], message[2]);
+
+
+    	/* apply translation instruction to each fellowship element */
 
 		for (var i = 0; i < fellowship.length; i++) {
 
@@ -154,7 +193,6 @@ var Fellowship = function(settings) {
 			}									
 
 		}
-
     	
     }
 
@@ -169,6 +207,9 @@ var Fellowship = function(settings) {
     	for (var i = 0; i < fellowship.length; i++) {
     		message.push(interaction);
     	}
+
+    	// initialise key history
+    	keyHistory.push(interaction);
     }
 
     init();
