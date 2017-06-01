@@ -57,6 +57,8 @@ var Fellowship = function(settings) {
 		return (key1.up && key2.down || key1.down && key2.up || key1.right && key2.left || key1.left && key2.right) ? true : false
 	}
 
+	/* Spawn new fellowship members randomly
+
 
    	/* Move the fellowship chain by passing a value of instruction and the data-num of the current cell */
 
@@ -118,7 +120,7 @@ var Fellowship = function(settings) {
     	// 	}
     	// }
 
-    	cell.style.animationName = animate(interaction, old); // set animation first
+    	
     	// console.log(cell.style.animationName);
 
     	if (old) { // if old cell, change id to null
@@ -130,7 +132,9 @@ var Fellowship = function(settings) {
     		cell.classList.remove(cell.className);
     		cell.classList.add("fellowship");
     		cell.setAttribute("id", fellowElement);
-    	}	
+    	}
+
+    	cell.style.animationName = animate(interaction, old);  // set animation after
     	
     }
 
@@ -143,8 +147,12 @@ var Fellowship = function(settings) {
 
     	if (interactions.keyup) {
 
+    		// CLONE interaction to get a new object
+
+    		var clone = JSON.parse(JSON.stringify(interactions));
+
     		// push new key to the head of the key history
-    		keyHistory.unshift(interactions);
+    		keyHistory.unshift(clone);
 
     		// remove new key if illegal move
     		if (checkIllegalMove(keyHistory[0], keyHistory[1])) {
@@ -159,6 +167,7 @@ var Fellowship = function(settings) {
     	}
 
     	// update message
+
     	message.unshift(keyHistory[0]);
     	// message.pop();
 
@@ -175,7 +184,8 @@ var Fellowship = function(settings) {
 
 			var oldDataNum = document.getElementById(fellowship[i]).getAttribute('data-num');
 
-			if (wallChecker(interactions, parseInt(oldDataNum))) {
+
+			if (wallChecker(message[0], parseInt(oldDataNum))) {
 				// Hit the wall; stop game
 				console.log("Hit wall!");
 				proceed = false;
@@ -185,11 +195,13 @@ var Fellowship = function(settings) {
 			else {
 
 				// translate each fellowship element according to its position and turn, within the message index
-				switchClass(parseInt(oldDataNum), fellowship[i], interactions, true); // old class to turn 
+
+				switchClass(parseInt(oldDataNum), fellowship[i], message[i], true); // old class to turn
 
 				var newDataNum = move(message[i], parseInt(oldDataNum));
 
-				switchClass(newDataNum, fellowship[i], interactions, false); // new class to turn
+				switchClass(newDataNum, fellowship[i], message[i], false); // new class to turn
+
 			}									
 
 		}
@@ -205,7 +217,10 @@ var Fellowship = function(settings) {
 
     	// initialise message
     	for (var i = 0; i < fellowship.length; i++) {
-    		message.push(interaction);
+
+    		/* CLONE interaction to get a separate object */
+    		var clone = JSON.parse(JSON.stringify(interaction));
+    		message.push(clone);
     	}
 
     	// initialise key history
