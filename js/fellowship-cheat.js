@@ -94,16 +94,21 @@ var Fellowship = function(settings) {
 		targetCell.classList.remove("fellowship"); // remove and add method to trigger animation
 	 	targetCell.classList.remove("new");
      	targetCell.classList.add("empty");
-     	targetCell.setAttribute("id", "null");
+     	targetCell.removeAttribute("id");
 
      	targetCell.style.animationName = "fadeOut";
 
 	}
 
-	function removeAllClasses(listOfClasses) {
-		for (var i = 0; i < listOfClasses.length; i++) {
-			listOfClasses.remove(listOfClasses[i]);
+	function removeAllClasses(cell) {
+		classEnum = ['new','fellowship','empty'];
+
+		for (var i = 0; i < classEnum.length; i++) {
+			if(cell.classList.contains(classEnum[i])) {
+				cell.classList.remove(classEnum[i]);
+			}
 		}
+
 	}
 
 	function headOnCollision(newDataNum) {
@@ -180,16 +185,16 @@ var Fellowship = function(settings) {
     	// console.log(cell.style.animationName);
 
     	if (old) { // if old cell, change id to null
-    		removeAllClasses(cell.classList);
+    		removeAllClasses(cell);
     		// cell.classList.remove(cell.className); // method to trigger animation
     		cell.classList.add("empty");
-    		cell.setAttribute("id","null");
+    		cell.removeAttribute("id");
     		// if (move) {
     		// 	console.log(cell);
     		// }
     	}
     	else { // if new cell, change id to the fellowship element
-    		removeAllClasses(cell.classList);
+    		removeAllClasses(cell);
     		// cell.classList.remove(cell.className);
     		cell.classList.add("fellowship");
     		cell.setAttribute("id", fellowElement);
@@ -245,7 +250,7 @@ var Fellowship = function(settings) {
     	/******************/
 
     	message.unshift(keyHistory[0]);
-    	// message.pop();
+    	message.pop();
 
     	// console.log("current valid key");
     	// console.log(keyHistory[0]);
@@ -303,12 +308,8 @@ var Fellowship = function(settings) {
    					// push new key to the head of the key history
     				keyHistory.unshift(clone);
 
-    	// 			//remove new key if illegal move
-    	// 			if (checkIllegalMove(keyHistory[0], keyHistory[1])) {
-    	// 				keyHistory.shift();
-    	// 			}
-
 					message.unshift(keyHistory[0]);
+
 					console.log(message.slice(0,fellowship.length - 1));
 					console.log(fellowship);
 
@@ -325,12 +326,10 @@ var Fellowship = function(settings) {
 					}
 					else {
 
-						cells[newDataNum].classList.remove('new');
 						switchClass(parseInt(newDataNum), fellowship[i], message[i], true, false);
 
 						newnewDataNum = move(message[i], parseInt(newDataNum));
 
-						cells[newDataNum].classList.remove('new');
 						switchClass(newnewDataNum, fellowship[i], message[i], false, false)
 					}
 					
