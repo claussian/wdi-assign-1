@@ -8,7 +8,7 @@ var Fellowship = function(settings) {
 
 	var fellowshipR = ['boromir','strider','legolas','gimli','merry','pippin']; // remaining fellowship members
 
-	var fellowshipMove = []; // newly spawned fellowship members, move if uncollided
+	var fellowshipNew = []; // newly spawned fellowship members, move if uncollided
 
 	var newFellowCounter = {}; // skip a frame for newly spawned members
 
@@ -74,20 +74,22 @@ var Fellowship = function(settings) {
 
     	randomEmptyCell.style.animationName = "bounceInDown";
 
-    	// temporarily remove member and add to Move array
-    	fellowshipMove.push(fellowshipR.splice(fellowshipR.indexOf(newFellow),1)[0]);
+    	// temporarily remove member and add to New array
+    	fellowshipNew.push(fellowshipR.splice(fellowshipR.indexOf(newFellow),1)[0]);
 
     	// add counter to fellowship object
     	newFellowCounter[newFellow] = 0;
 
+    	console.log("spawned " + newFellow);
+
 	}
 
-	/* Change class to empty when wall is hit */
+	/* Remove newly spawned fellowship member randomly after a set time */
 	function removeFellowship(member) {
 
 		// get fellowship member to remove
 		var targetCell = document.getElementById(member); // get list of empty cells
-		console.log(targetCell);
+		//console.log(targetCell);
 
 		targetCell.classList.remove("fellowship"); // remove and add method to trigger animation
 	 	targetCell.classList.remove("new");
@@ -102,6 +104,22 @@ var Fellowship = function(settings) {
 		for (var i = 0; i < listOfClasses.length; i++) {
 			listOfClasses.remove(listOfClasses[i]);
 		}
+	}
+
+	function headOnCollision(newDataNum) {
+		var match = 0;
+		var targetCell_1 = cells[newDataNum];
+		//console.log("new cell", targetCell_1)
+		var targetCell_2 = document.getElementsByClassName("new");
+		//console.log("snakehead cell", targetCell_2);
+
+		for (var i = 0; i < targetCell_2.length; i++) {
+			if (parseInt(targetCell_2[i].getAttribute('data-num')) == parseInt(targetCell_1.getAttribute('data-num'))) {
+				match++;
+			}
+		}
+		
+		return match;
 	}
 
 
@@ -166,18 +184,18 @@ var Fellowship = function(settings) {
     		// cell.classList.remove(cell.className); // method to trigger animation
     		cell.classList.add("empty");
     		cell.setAttribute("id","null");
-    		if (move) {
-    			console.log(cell);
-    		}
+    		// if (move) {
+    		// 	console.log(cell);
+    		// }
     	}
     	else { // if new cell, change id to the fellowship element
     		removeAllClasses(cell.classList);
     		// cell.classList.remove(cell.className);
     		cell.classList.add("fellowship");
     		cell.setAttribute("id", fellowElement);
-    		if (move) {
-    			console.log(cell);
-    		}
+    		// if (move) {
+    		// 	console.log(cell);
+    		// }
     	}
 
     	cell.style.animationName = animate(interaction, old);  // set animation after
@@ -194,7 +212,7 @@ var Fellowship = function(settings) {
     	/* Spawn new members */
     	/*********************/
 
-    	if (frameCounter % 7 == 0) { // fellowship member takes maximum 7 seconds to move down the grid
+    	if (frameCounter % 7 == 0 && fellowshipR.length > 0) { // fellowship member takes maximum 7 seconds to move down the grid
     		spawnFellowship();
     	}
 
@@ -243,6 +261,9 @@ var Fellowship = function(settings) {
 
 			var oldDataNum = document.getElementById(fellowship[i]).getAttribute('data-num');
 
+			/******************/
+			/* Check for wall */
+			/******************/
 
 			if (wallChecker(message[0], parseInt(oldDataNum))) { // Hit the wall; stop game
 				
@@ -253,14 +274,77 @@ var Fellowship = function(settings) {
 			}
 
 			else {
-
 				// translate each fellowship element according to its position and turn, within the message index
-
-				switchClass(parseInt(oldDataNum), fellowship[i], message[i], true, false); // old class to turn
 
 				var newDataNum = move(message[i], parseInt(oldDataNum));
 
+				/***********************/
+				/* COLLISION DETECTION */
+				/***********************/
+
+				if (headOnCollision(newDataNum) > 0) {
+					console.log('Hit target!');
+
+					/************************************************/
+					/* Append the new guy to the head of fellowship */
+					/************************************************/
+
+					var newSnakeHead = cells[newDataNum].getAttribute('id');
+
+					fellowship.unshift(newSnakeHead); // add new member to snakehead
+					fellowshipNew.splice(fellowshipNew.indexOf(newSnakeHead),1); // remove from remaining members
+
+					/*******************************************/
+					/* Append a new interaction for the new guy*/
+					/*******************************************/
+
+					var clone = JSON.parse(JSON.stringify(keyHistory[0])); // pass a copy of the direction of the original snakehead
+
+   					// push new key to the head of the key history
+    				keyHistory.unshift(clone);
+
+    	// 			//remove new key if illegal move
+    	// 			if (checkIllegalMove(keyHistory[0], keyHistory[1])) {
+    	// 				keyHistory.shift();
+    	// 			}
+
+					message.unshift(keyHistory[0]);
+					console.log(message.slice(0,fellowship.length - 1));
+					console.log(fellowship);
+
+					/******************************/
+					/* switch the new guy's class */
+					/******************************/
+
+					if (wallChecker(message[0], parseInt(newDataNum))) { // Hit the wall; stop game
+				
+						console.log("Hit wall!");
+						// proceed = false;
+						i += fellowship.length; // exit the loop so that subsequent fellowship members do not execute the next move 
+
+					}
+					else {
+
+						cells[newDataNum].classList.remove('new');
+						switchClass(parseInt(newDataNum), fellowship[i], message[i], true, false);
+
+						newnewDataNum = move(message[i], parseInt(newDataNum));
+
+						cells[newDataNum].classList.remove('new');
+						switchClass(newnewDataNum, fellowship[i], message[i], false, false)
+					}
+					
+				}
+
+				else { // no collision
+
+				switchClass(parseInt(oldDataNum), fellowship[i], message[i], true, false); // old class to turn
+
+				
 				switchClass(newDataNum, fellowship[i], message[i], false, false); // new class to turn
+
+				}
+				
 
 			}									
 
@@ -270,37 +354,42 @@ var Fellowship = function(settings) {
 		/* Move newly spawned fellowship members independently */
 		/*******************************************************/
 
-		 if (fellowshipMove.length > 0) { // there are members to move
+		//  if (fellowshipNew.length > 0) { // there are members to move
 
-		 	for (var i = 0; i < fellowshipMove.length; i++) {
+		//  	for (var i = 0; i < fellowshipNew.length; i++) {
 
-				if (newFellowCounter[fellowshipMove[i]] > 0) { // skip the first frame
+		// 		if (newFellowCounter[fellowshipNew[i]] > 0) { // skip the first frame
 
-					var oldDataNum = document.getElementById(fellowshipMove[i]).getAttribute('data-num');
+		// 			var oldDataNum = document.getElementById(fellowshipNew[i]).getAttribute('data-num');
 
-					if (wallChecker(down, parseInt(oldDataNum))) {
+		// 			if (wallChecker(down, parseInt(oldDataNum))) {
 						
-						console.log("removing " + fellowshipMove[i]); // change the class first
-						removeFellowship(fellowshipMove[i]);
+		// 				console.log("removing " + fellowshipNew[i]); // change the class first
+		// 				removeFellowship(fellowshipNew[i]);
 
-						fellowshipMove.splice(fellowshipMove[i], 1); // remove from array
+		// 				fellowshipNew.splice(fellowshipNew[i], 1); // remove from array
 
-					}
+		// 			}
 
-					else {
-						// Move down each newly spawned and unappended fellowship element
+		// 			else {
+		// 				// Move down each newly spawned and unappended fellowship element
 
-						switchClass(parseInt(oldDataNum), fellowshipMove[i], down, true, true); // old class to turn
+		// 				switchClass(parseInt(oldDataNum), fellowshipNew[i], down, true, true); // old class to turn
 
-						var newDataNum = move(down, parseInt(oldDataNum));
+		// 				var newDataNum = move(down, parseInt(oldDataNum));
 
-						switchClass(newDataNum, fellowshipMove[i], down, false, true); // new class to turn
-					}
-				}
+		// 				switchClass(newDataNum, fellowshipNew[i], down, false, true); // new class to turn
+		// 			}
+		// 		}
 
-				newFellowCounter[fellowshipMove[i]] += 1; // add a frame
-			}
-		}
+		// 		newFellowCounter[fellowshipNew[i]] += 1; // add a frame
+		// 	}
+		// }
+
+		/**************************************************/
+		/* Newly spawned fellowship members stay in place and disappear after some time*/
+		/**************************************************/
+
 
     }
 
