@@ -52,7 +52,11 @@ td:hover{
 .empty {
 	border: none;
 	animation-name: none;
-	animation-duration: .5s;
+	animation-duration: 1s;
+	background-color: transparent;
+	background-size: cover;
+	background-position: center;
+	background-image: none;
 }
 
 .fellowship {
@@ -61,7 +65,7 @@ td:hover{
 	background-position: center;
 	border: 0px;
 	animation-name: none;
-	animation-duration: .5s;
+	animation-duration: 1s;
 }
 
 #null {
@@ -101,5 +105,5 @@ td:hover{
 }
 
 #pippin {
-	background-image: url('../assets/images/gimli.png');
+	background-image: url('../assets/images/pippin.png');
 }

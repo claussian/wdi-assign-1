@@ -9,7 +9,7 @@
 
 
    // World
-   var frameCounter = 0;
+   var frameCounter = 1;
    var assets = [];
    var fellowship = new Fellowship(settings); // create new fellowship object
    assets.push(fellowship);
@@ -87,11 +87,11 @@
 
       // startFellowship(); // fellowship is not supposed to be rendered per cycle
       //console.log("proceed: " + proceed);
-      if (proceed) {
+      //if (proceed) {
         for(var i = 0; i < assets.length; i++){                             
-        assets[i].render(interactions, frameCounter, proceed);
+        assets[i].render(interactions, frameCounter);
         }
-      }
+      // }
       
 
       // if(frameCounter % 5 === 0 ){ // spawn orcs generically
