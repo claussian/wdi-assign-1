@@ -112,7 +112,7 @@
               };
             })();
 
-            var framesToSkip = 60;
+            var framesToSkip = 50;
             var counter = 0;
             
             (function animloop(){

@@ -84,21 +84,30 @@ var Fellowship = function(settings) {
 
 	}
 
-	/* Remove newly spawned fellowship member randomly after a set time */
+	/* Remove newly spawned fellowship member */
 	function removeFellowship(member) {
 
 		// get fellowship member to remove
 		var targetCell = document.getElementById(member); // get list of empty cells
 		//console.log(targetCell);
 
-		targetCell.classList.remove("fellowship"); // remove and add method to trigger animation
-	 	targetCell.classList.remove("new");
+		removeAllClasses(targetCell);
      	targetCell.classList.add("empty");
      	targetCell.removeAttribute("id");
 
      	targetCell.style.animationName = "fadeOut";
 
 	}
+
+	/* Choose one of the fellowship members to remove randomly */
+
+	function randomRemoveFellowship () {
+		var removeThisGuy = fellowshipNew[Math.floor(Math.random() * fellowshipNew.length)];
+		fellowship.push(fellowshipNew.splice(fellowshipNew.indexOf(removeThisGuy),1)[0]);
+		removeFellowship(removeThisGuy);
+	}
+
+	/* De-class object completely */
 
 	function removeAllClasses(cell) {
 		classEnum = ['new','fellowship','empty'];
@@ -110,6 +119,8 @@ var Fellowship = function(settings) {
 		}
 
 	}
+
+	/* Detect collision */
 
 	function headOnCollision(newDataNum) {
 		var match = 0;
@@ -185,22 +196,14 @@ var Fellowship = function(settings) {
     	// console.log(cell.style.animationName);
 
     	if (old) { // if old cell, change id to null
-    		removeAllClasses(cell);
-    		// cell.classList.remove(cell.className); // method to trigger animation
+    		removeAllClasses(cell);						// method to trigger animation 
     		cell.classList.add("empty");
     		cell.removeAttribute("id");
-    		// if (move) {
-    		// 	console.log(cell);
-    		// }
     	}
     	else { // if new cell, change id to the fellowship element
     		removeAllClasses(cell);
-    		// cell.classList.remove(cell.className);
     		cell.classList.add("fellowship");
     		cell.setAttribute("id", fellowElement);
-    		// if (move) {
-    		// 	console.log(cell);
-    		// }
     	}
 
     	cell.style.animationName = animate(interaction, old);  // set animation after
@@ -220,6 +223,15 @@ var Fellowship = function(settings) {
     	if (frameCounter % 7 == 0 && fellowshipR.length > 0) { // fellowship member takes maximum 7 seconds to move down the grid
     		spawnFellowship();
     	}
+
+    	/**********************************************/
+    	/* Remove new members sporadically if uncaught*/
+    	/**********************************************/
+
+    	if (frameCounter % 13 == 0 && fellowshipNew.length > 0) {
+    		randomRemoveFellowship(); 
+    	}
+
 
     	/**********************/
     	/* Update key history */
@@ -287,6 +299,7 @@ var Fellowship = function(settings) {
 				/* COLLISION DETECTION */
 				/***********************/
 
+
 				if (headOnCollision(newDataNum) > 0) {
 					console.log('Hit target!');
 
@@ -299,9 +312,9 @@ var Fellowship = function(settings) {
 					fellowship.unshift(newSnakeHead); // add new member to snakehead
 					fellowshipNew.splice(fellowshipNew.indexOf(newSnakeHead),1); // remove from remaining members
 
-					/*******************************************/
-					/* Append a new interaction for the new guy*/
-					/*******************************************/
+					/********************************************/
+					/* Append a new interaction for the new guy */
+					/********************************************/
 
 					var clone = JSON.parse(JSON.stringify(keyHistory[0])); // pass a copy of the direction of the original snakehead
 
@@ -326,11 +339,11 @@ var Fellowship = function(settings) {
 					}
 					else {
 
-						switchClass(parseInt(newDataNum), fellowship[i], message[i], true, false);
+						switchClass(parseInt(newDataNum), fellowship[i], message[i], true, false); // old class to turn
 
 						newnewDataNum = move(message[i], parseInt(newDataNum));
 
-						switchClass(newnewDataNum, fellowship[i], message[i], false, false)
+						switchClass(newnewDataNum, fellowship[i], message[i], false, false) // new class to turn
 					}
 					
 				}
