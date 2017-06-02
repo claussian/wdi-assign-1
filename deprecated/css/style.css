@@ -1,0 +1,112 @@
+@font-face {
+font-family: 'First Order';
+font-style: normal;
+font-weight: normal;
+src: url('../assets/first-order/firstv2.woff') format('woff');
+}
+
+@font-face {
+font-family: 'First Order Plain';
+font-style: normal;
+font-weight: normal;
+src: url('../assets/first-order/firstv2p.woff') format('woff');
+}
+
+header h1 {
+	font-family: 'First Order';
+	font-size: 3em;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+header h2 {
+	font-family: 'First Order Plain';
+	font-size: 1.5em;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 700px;
+}
+
+header h2 span {
+	color: gold;
+}
+
+#fellowship-board {
+	top: 500px;
+	left: 500px;
+	/*margin-top: -50px;
+	margin-left:-50px;*/
+	position: absolute;
+}
+
+.fellowship {
+	height: 150px;
+	width: 150px;
+	position: relative;
+	border-radius: 20%;
+	background-color: transparent;
+	background-size: cover;
+	background-position: center;
+	border: 0px;
+	float:left;
+	display: inline-block;
+}
+	
+#gandalf {
+	background-image: url('../assets/images/gandalf_cartoon.png');
+}
+
+#frodo {
+	background-image: url('../assets/images/frodo.png');
+}
+
+#samwise {
+	background-image: url('../assets/images/samwise.png');
+}
+
+#gimli {
+	background-image: url('../assets/images/gimli.png');
+}
+
+#strider {
+	background-image: url('../assets/images/strider.png');
+}
+
+#boromir {
+	background-image: url('../assets/images/boromir.png');
+}
+
+#legolas {
+	background-image: url('../assets/images/gimli.png');
+}
+
+#merry {
+	background-image: url('../assets/images/gimli.png');
+}
+
+#pippin {
+	background-image: url('../assets/images/gimli.png');
+}
+
+
+
+
+
+
+.orc {
+	top: 100px;
+	left: 100px;
+	height: 150px;
+	width: 150px;
+	/* border-radius: 50%; */
+	position: absolute;
+	/*background-color: black;*/
+	background-image: url('../assets/images/orc.png');
+	background-size: cover;
+	background-position: center;
+}
+
+#game-board {
+	height: 500px;
+	width: 1000px;
+}

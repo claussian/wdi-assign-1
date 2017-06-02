@@ -2,22 +2,26 @@ var Fellowship = function(settings) {
 
 	/* Global variables */
 
-	var fellowship = ['gandalf', 'frodo','samwise']; // initialize fellowship
+	var fellowship = ['gandalf','frodo','samwise']; // initial fellowship members
 
-	var fellowshipR = ['boromir','strider','legolas','gimli','meriadoc','pippin']; // remaining fellowship members
+	// var fellowshipP = [45,46,47];  // fellowship positions
 
-	var fellowBoard = document.getElementById('fellowship-board'); // parent node
+	var fellowshipR = ['boromir','strider','legolas','gimli','merry','pippin']; // remaining fellowship members
 
-	var message = []; // array containing instruction tapes telling dom elements where to go based on index
+	var fellowshipNew = []; // newly spawned fellowship members
 
-	var divSizeCounter = 0; // pixel counter to move in units of div width
+	var orcNew = []; // newly spawned orcs, move if uncollided
 
-	var picSize = 150; // in px
+	var orcIndex = 1; // orc ids to execute pause for newly spawned orcs
 
-	// Browser dimensions
+	var newOrcCounter = {}; // skip a frame for newly spawned orcs
 
-	var w = parseInt(window.innerWidth); 
-    var h = parseInt(window.innerHeight);
+	var message = []; // array containing instructions telling dom elements where to go based on index
+
+	var keyHistory = []; // array containing key history
+
+	var cells = document.getElementsByTagName("td"); // enable cell dom elements to be inspected globally
+
 
 	/* Interactions: define here so that message array can be populated on init */
 
@@ -28,220 +32,573 @@ var Fellowship = function(settings) {
    	interaction.right = false;			// Right arrow key pressed
    	interaction.keyup = false;			// New key released
 
-   	function wall(fellowElement) {
+   	var down; // instruction for newly spawned members
 
-      var x_right = parseInt(fellowElement.style.left)  + parseInt(fellowElement.style.width);
-      var x_left = parseInt(fellowElement.style.left);
-      var y_top = parseInt(fellowElement.style.top);
-      var y_bottom = parseInt(fellowElement.style.top) + parseInt(fellowElement.style.height);    
 
-      if(y_bottom > h){
-        fellowElement.style.top = (h - parseInt(fellowElement.style.height)) + 'px';
+	/* Check to see if wall has been hit (illegal interaction while in a certain cell) */
+
+	function wallChecker(instruction, num) {
+		var wall = [];
+
+		if(instruction.up) {
+			wall = [0,1,2,3,4,5,6];
+		}
+        if(instruction.left) {
+          	wall = [0,7,14,21,28,35,42];
+        } 
+        if(instruction.right) {
+        	wall = [6,13,20,27,34,41,48];
+        }
+        if(instruction.down) {
+        	wall = [42,43,44,45,46,47,48];
+        }
+
+        return wall.indexOf(num) > -1 ? true : false;      
+	}
+
+	/* Check for illegal moves. Up cannot be followed by down and vice-versa; ditto left-right */
+
+	function checkIllegalMove(key1, key2) {
+		return (key1.up && key2.down || key1.down && key2.up || key1.right && key2.left || key1.left && key2.right || key1.up && key2.up || key1.down && key2.down || key1.left && key2.left || key1.right && key2.right) ? true : false
+	}
+
+	/* Spawn new fellowship members randomly */
+
+	function spawnFellowship() {
+
+		var newFellow = fellowshipR[Math.floor(Math.random() * fellowshipR.length)]; // get new fellowship member
+		var empty = document.getElementsByClassName("empty"); // get list of empty cells
+		var randomEmptyCell = empty[Math.floor(Math.random() * empty.length)]; // choose a random cell
+
+		// Change cell class and slideInDown
+		randomEmptyCell.classList.remove("empty"); // remove and add method to trigger animation
+    	randomEmptyCell.classList.add("fellowship");
+    	randomEmptyCell.classList.add("new");
+    	randomEmptyCell.setAttribute("id", newFellow);
+
+    	randomEmptyCell.style.animationName = "bounceInDown";
+
+    	// temporarily remove member and add to New array
+    	fellowshipNew.push(fellowshipR.splice(fellowshipR.indexOf(newFellow),1)[0]);
+
+    	// add counter to fellowship object
+    	//newFellowCounter[newFellow] = 0;
+
+    	console.log("spawned " + newFellow);
+
+	}
+
+	/* Spawn new orcs randomly */
+
+	function spawnOrc() {
+
+		var empty = document.getElementsByClassName("empty"); // get list of empty cells
+
+		topRow = [];
+		for (var i = 0; i < empty.length; i++) { // get empty cells in the top row
+			if (parseInt(empty[i].getAttribute('data-num')) < 6 ) {
+				topRow.push(empty[i]);
+			}
+		}
+
+		var randomEmptyCell = topRow[Math.floor(Math.random() * topRow.length)]; // choose a random cell
+
+		// Change cell class and rotateIn
+		randomEmptyCell.classList.remove("empty"); // remove and add method to trigger animation
+    	randomEmptyCell.classList.add("orc");
+    	var orcId = "orc" + orcIndex;
+    	randomEmptyCell.setAttribute('id', JSON.parse(JSON.stringify(orcId)));
+
+    	randomEmptyCell.style.animationName = "rotateIn";
+
+    	// add counter to orc object
+    	newOrcCounter[JSON.parse(JSON.stringify(orcId))] = 0;
+
+    	console.log("spawned Orc " + orcId);
+
+    	// added new orc
+    	orcNew.push(JSON.parse(JSON.stringify(orcId)));
+
+    	orcIndex ++; 
+
+	}
+
+	/* Remove newly spawned fellowship member or Orc when it hits the wall */
+
+	function removeOrc(member) {
+
+		// get fellowship member to remove
+		var targetCell = document.getElementById(member);
+		//console.log(targetCell);
+
+		removeAllClasses(targetCell);
+     	targetCell.classList.add("empty");
+     	targetCell.removeAttribute("id");
+
+     	targetCell.style.animationName = "fadeOut";
+
+	}
+
+	/* Choose one of the fellowship members to remove randomly */
+
+	function randomRemoveFellowship () {
+		var removeThisGuy = fellowshipNew[Math.floor(Math.random() * fellowshipNew.length)];
+		fellowship.push(fellowshipNew.splice(fellowshipNew.indexOf(removeThisGuy),1)[0]);
+		removeFellowship(removeThisGuy);
+	}
+
+	/* De-class object completely */
+
+	function removeAllClasses(cell) {
+		classEnum = ['new','fellowship','empty','orc'];
+
+		for (var i = 0; i < classEnum.length; i++) {
+			if(cell.classList.contains(classEnum[i])) {
+				cell.classList.remove(classEnum[i]);
+			}
+		}
+
+	}
+
+	/* Detect collision. Condition: data-num of intended cell movement and new fellowship member match */
+
+	function headOnCollision(newDataNum, targetClass) {
+		var match = 0;
+		var targetCell_1 = cells[newDataNum];
+		var targetCell_2 = document.getElementsByClassName(targetClass);
+
+		for (var i = 0; i < targetCell_2.length; i++) {
+			if (targetClass == "orc"){
+				console.log("orc cell: " + parseInt(targetCell_2[i].getAttribute('data-num')));
+				console.log("snake cell: " + parseInt(targetCell_1.getAttribute('data-num')));
+			}
+			
+			if (parseInt(targetCell_2[i].getAttribute('data-num')) == parseInt(targetCell_1.getAttribute('data-num'))) {
+				match++;
+			}
+		}
+		
+		return match;
+	}
+
+
+   	/* Move the fellowship chain by passing a value of instruction and the data-num of the current cell */
+
+    function move(instruction, currentCell) { // interaction key is local in scope
+
+      if(instruction.up){
+        return parseInt(currentCell) - 7;
       }
 
-      if(y_top < -w/2){
-        fellowElement.style.top = '200px';
+      if(instruction.down){
+        return parseInt(currentCell) + 7;
       }
+
+      if(instruction.left){
+        return parseInt(currentCell) - 1;
+      }
+
+      if(instruction.right){
+        return parseInt(currentCell) + 1;
+      }
+
     }
 
-     /* Spawn remaining fellowship members randomly after a certain period of time */
+    /* Check which animation to call from Daniel Eden's animate.css */
 
-	function createNewFellowship (frameCounter) {
-		// 
-		var fellowNew = fellowElement[Math.floor(Math.random) * fellowElement.length];
+    function animate(instruction, old) { // interaction key is local in scope
 
-		var x = Math.floor(Math.random() * w); // assign fellowship's x position
-		var y = Math.floor(Math.random() * n); // assign felllowship's y position
+      if(instruction.up){
+        return old ? "none" : "slideInUp" //"slideOutUp";
+      }
 
-		fellowNewElement = document.createElement('div');
-		fellowNewElement.className = "fellowship";
-		fellowNewElement.setAttribute("id", fellowNew);
-		fellowNewElement.style.top = y + 'px';
-		fellowNewElement.style.left = x + "px";
-		fellowBoard.appendChild(fellowNewElement);
+      if(instruction.down){
+        return old ? "none" : "slideInDown" // slideOutDown";
+      }
+
+      if(instruction.left){
+        return old ? "none" : "slideInRight" // "slideOutLeft";
+      }
+
+      if(instruction.right){
+        return old ? "none" : "slideInLeft" // "slideOutRight";
+      }
+
+    }
+
+    /* Switch the faces of old and new data-num; do not couple the switches yet  */
+
+    function switchClass (dataNum, fellowElement, interaction, old, className) {
+    	
+    	var cell;
+    	
+    	// get the cell which needs to be changed
+
+    	cell = cells[dataNum];
+    	
+    	// console.log(cell.style.animationName);
+
+    	cell.style.animationName = animate(interaction, old);  // set animation after
+
+    	if (old) { // if old cell, change id to null
+    		removeAllClasses(cell);						// method to trigger animation 
+    		cell.classList.add("empty");
+    		cell.removeAttribute("id");
+    	}
+    	else { // if new cell, change id to the fellowship or orc element
+    		removeAllClasses(cell);
+    		cell.classList.add(className);
+    		cell.setAttribute("id", fellowElement);
+    	}   	
+    }
+
+	/* Alert board */
+
+	function alertDisplay (type, member) {
+
+		var alertBoard = document.getElementById('alert-board');
+		var children = alertBoard.childNodes;
+		while (children.length > 0) {
+			alertBoard.removeChild(children[0]); // remove all existing nodes first
+		}
+
+		var scrawl = document.getElementById(type).textContent; // get the message to display from html
+		console.log(scrawl);
+    	
+    	var firstM = document.createElement('h1');
+    	if (type == "hit") {
+    		firstM.textContent = scrawl.replace("{{fellowship}}", member); // replace with fellowship member's name
+    	}
+    	else {
+    		firstM.textContent = scrawl;
+    	}
+    	// firstM.
+    	alertBoard.appendChild(firstM);
+    	firstM.className = "eden";	
+    	// firstM.style.animationName = "slideInRight";
+    	//console.log(firstM);
+    	
+
+    	var secondM = document.createElement('h2'); // re-append secondary message
+    	secondM.innerHTML = document.getElementById("secondHead").innerHTML;
+    	// alertBoard.innerHTML = firstM + secondM;
+		// console.log(secondM);
+		alertBoard.appendChild(secondM);
 
 	}
 
 
-    /* Move the fellowship chain by passing a value of interaction */
+    /* Function to invoke every cycle or when key is pressed, rendered per frame */
 
-    function move(tape, fellowElement) { // interaction key is local in scope
+    function actualizeKey(interactions, frameCounter, fellowIndex) {
+    	
+    	console.log(frameCounter);
 
-      if(tape.up){
-        fellowElement.style.top = parseInt(fellowElement.style.top) - settings.speed + "px";
-      }
+    	/*********************/
+    	/* Spawn new members */
+    	/*********************/
 
-      if(tape.down){
-        fellowElement.style.top = parseInt(fellowElement.style.top) + settings.speed + "px";
-      }
-
-      if(tape.left){
-        fellowElement.style.left = parseInt(fellowElement.style.left) - settings.speed + "px";
-      }
-
-      if(tape.right){
-        fellowElement.style.left = parseInt(fellowElement.style.left) + settings.speed + "px";
-      }
-
-      if(settings.wall){
-        wall(fellowElement);
-      }
-
-    }
-
-    /* Pack translation operation in units of repeated frames */
-
-    function packer (key, repeat) {
-    	var pack = [];
-    	for (var i = 0; i < repeat; i++) {
-    		pack.push(key);
+    	if (frameCounter % 7 == 0 && fellowshipR.length > 0 && settings.disable == false) { // fellowship member takes maximum 7 seconds to move down the grid
+    		spawnFellowship();
     	}
-    	return pack;
-    }
+
+    	/**********************************************/
+    	/* Remove new members sporadically if uncaught*/
+    	/**********************************************/
+
+    	// if (frameCounter % 13 == 0 && fellowshipNew.length > 0) { // resulted in buggy behaviour where collision is detected just before element is destroyed
+    	// 	randomRemoveFellowship(); 
+    	// }
+
+    	/******************/
+    	/* Spawn new Orcs */
+    	/******************/
+
+    	if (frameCounter % 13 == 0 && settings.orcs == true && settings.disable ==  false) {
+    		spawnOrc();
+    	}
 
 
-    /* Function to invoke when key is pressed, rendered per frame */
+    	/**********************/
+    	/* Update key history */
+    	/**********************/
 
-    function actualizeKey (interactions, frameCounter) {
+    	if (interactions.keyup) {
 
+    		// CLONE interaction to get a new object
 
-    	/* Execute initial message unshift only when keyup is true */
+    		var clone = JSON.parse(JSON.stringify(interactions));
 
-    	if (interactions.keyup) { // && frameCounter % 60 == 0) {   // set a buffer so that keystroke not so sensitive?
-    		
-    		console.log("value init keyup: " + interactions.keyup);
+    		// push new key to the head of the key history
+    		keyHistory.unshift(clone);
 
-    		// add new instruction tape for the first fellowship element
-    		var tape = packer(interactions, Math.floor(picSize/settings.speed));
+    		// remove new key if illegal move
+    		if (checkIllegalMove(keyHistory[0], keyHistory[1])) {
+    			keyHistory.shift();
+    		}
+  		
+    		console.log("Key pressed!");
 
-    		message.unshift(tape);
-
-    		//remove previous instruction tape for last fellowship element
-    		message.pop();
-
-    		console.log("on keyup");
-    		console.log(message[0][0]); // gandalf's instruction
-    		console.log(message[1][0]); // frodo's instruction
-    		console.log(message[2][0]); // samwise's instruction
-
-    		//reset keyup ? this is not working ?
     		interactions.keyup = false;
 
-    		console.log("value reset keyup: " + interactions.keyup);
+    	}
 
-    		//reset counter for pixel size movement
-    		divSizeCounter = 0;
-    	}    		
+    	/******************/
+    	/* update message */
+    	/******************/
 
-    		// // push current key into keys array
-    		// keys.push(interactions);
-  	
-    		// //push current array to list of arrays to be operated on
-    		// var current = [];
+    	message.unshift(keyHistory[0]);
+    	message.pop();
 
-    	//	keyup = false; // reset keyup indicator
-    	
-		
-		/* Perform translation on each fellowship element in units of 150px */
+    	// console.log("current valid key");
+    	// console.log(keyHistory[0]);
 
-		if (divSizeCounter < (picSize/settings.speed)) {
+    	// console.log("message");
+    	// console.log(message[0], message[1], message[2]);
 
-			// apply translation instruction tape to each fellowship element
-			for (var i = 0; i < fellowship.length; i++) {
-			// translate each fellowship element according to its position and turn, within the message index
-				move(message[i][divSizeCounter], fellowship[i]);
+    	/************************************************************/
+    	/* Apply translation instruction to each fellowship element */
+    	/************************************************************/
+
+		for (var i = 0; i < fellowship.length; i++) {
+
+			// console.log(fellowship[i]);
+			var oldDataNum = document.getElementById(fellowship[i]).getAttribute('data-num');
+
+			/******************/
+			/* Check for wall */
+			/******************/
+
+			if (wallChecker(message[0], parseInt(oldDataNum))) { // Hit the wall; stop game
+				
+				/********************/
+				/* Append a message */
+				/********************/
+
+				alertDisplay("dead");
+				console.log("Hit wall!");
+
+				/*******************************************/
+				/* Stop all movement, switch to win class */
+				/*******************************************/
+
+				// var winFellows = document.getElementsByClassName("fellowship");
+				// for (var i = 0; i < deadFellows.length; i++) {
+				// 	 	var dataNum = deadFellows[i].getAttribute('data-num');
+				// 	 	switchClass(parseInt(dataNum), "dead", down, false, "skull");
+				// 	 }
+				var bg = document.getElementsByTagName("table")[0];
+				bg.classList.remove("play");
+				bg.classList.add("one-ring");
+				bg.animationName = "fadeIn";
+
+				// proceed = false;
+				i += fellowship.length; // exit the loop so that subsequent fellowship members do not execute the next move
+				settings.disable = true; 
+
 			}
 
-			divSizeCounter++;
-			// console.log(divSizeCounter);
+			else if (settings.disable == false) {
+				// translate each fellowship element according to its position and turn, within the message index
+
+				var newDataNum = move(message[i], parseInt(oldDataNum)); // intended cell destination
+
+				/***********************/
+				/* COLLISION DETECTION */
+				/***********************/
+
+
+				if (headOnCollision(newDataNum, 'new') > 0) {
+					console.log('Hit target!');
+
+					/************************************************/
+					/* Append the new guy to the head of fellowship */
+					/************************************************/
+
+					var newSnakeHead = cells[newDataNum].getAttribute('id');
+
+					fellowship.unshift(newSnakeHead); // add new member to snakehead
+					fellowshipNew.splice(fellowshipNew.indexOf(newSnakeHead),1); // remove from remaining members
+
+					/********************************************/
+					/* Append a new interaction for the new guy */
+					/********************************************/
+
+					var clone = JSON.parse(JSON.stringify(keyHistory[0])); // pass a copy of the direction of the original snakehead
+
+   					// push new key to the head of the key history
+    				keyHistory.unshift(clone);
+
+					message.unshift(keyHistory[0]);
+
+					console.log(message.slice(0,fellowship.length));
+					console.log(fellowship);
+
+					/******************************/
+					/* switch the new guy's class */
+					/******************************/
+
+					if (wallChecker(message[0], parseInt(newDataNum))) { // Hit the wall; stop game
+				
+						console.log("Hit wall!");
+						// proceed = false;
+						i += fellowship.length; // exit the loop so that subsequent fellowship members do not execute the next move 
+
+					}
+					else {
+
+						switchClass(parseInt(newDataNum), fellowship[i], message[i], true, "fellowship"); // old class to turn
+
+						newNewDataNum = move(message[i], parseInt(newDataNum));
+
+						switchClass(newNewDataNum, fellowship[i], message[i], false, "fellowship") // new class to turn
+					}
+
+					// /********************/
+					// /* Append a message */
+					// *********************/
+
+					if (fellowship.length == 9) {
+
+						alertDisplay("win",fellowship[i]);
+
+						/*******************************************/
+						/* Stop all movement, switch to win class */
+						/*******************************************/
+
+						// var winFellows = document.getElementsByClassName("fellowship");
+						// for (var i = 0; i < deadFellows.length; i++) {
+						// 	 	var dataNum = deadFellows[i].getAttribute('data-num');
+						// 	 	switchClass(parseInt(dataNum), "dead", down, false, "skull");
+						// 	 }
+						var bg = document.getElementsByTagName("table")[0];
+						bg.classList.remove("play");
+						bg.classList.add("gondor");
+						bg.animationName = "fadeIn";
+
+						i += fellowship.length; // exit loop
+					}
+					else {
+						alertDisplay("hit",fellowship[i]);
+					}
+					
+				}
+
+				else { // no collision
+
+				switchClass(parseInt(oldDataNum), fellowship[i], message[i], true, "fellowship"); // old class to turn
+
+				
+				switchClass(newDataNum, fellowship[i], message[i], false, "fellowship"); // new class to turn
+
+				}
+				
+
+			}									
+
 		}
 
-		/* Fellowship element has moved its own width, execute next message unshift */
+		/*****************************************/
+		/* Move newly spawned orcs independently */
+		/*****************************************/
 
-		else {
-			// refresh turn
-			divSizeCounter = 0;
+		  if (orcNew.length > 0) { // there are orcs to move
 
-			// unshift and pop
-			tape = packer(interactions, Math.floor(picSize/settings.speed));
-    		message.unshift(tape);
-    		message.pop();
+		  	for (var i = 0; i < orcNew.length; i++) {
 
-    		console.log("on finish");
-    		console.log(message[0][0]); // gandalf's instruction
-    		console.log(message[1][0]); // frodo's instruction
-    		console.log(message[2][0]); // samwise's instruction
+		 		if (newOrcCounter[orcNew[i]] > 0) { // skip the first frame
 
+		 			var oldDataNum = document.getElementById(orcNew[i]).getAttribute('data-num');
 
-			// apply translation instruction tape to each fellowship element
-			//for (var i = 0; i < fellowship.length; i++) {
-			//	move(message[i][divSizeCounter], fellowship[i]);
-			//}
-		}
+		 			if (wallChecker(down, parseInt(oldDataNum))) {
+						
+		 				console.log("removing " + orcNew[i]); // change the class first
+		 				removeOrc(orcNew[i]);
+
+		 				orcNew.splice(orcNew[i], 1); // remove from array
+
+		 			}
+
+		 			else {
+		 				// Move down each newly spawned and unappended orc element
+		 				
+		 				var newDataNum = move(down, parseInt(oldDataNum)); // intended cell destination
+		 				console.log("new orc cell: " + newDataNum);
+
+		 				/***********************/
+						/* COLLISION DETECTION */
+						/***********************/
+
+						if (headOnCollision(newDataNum, 'fellowship') > 0) {
+							console.log('Orc hits fellowship!');
+
+							/*******************************************/
+							/* Stop all movement, switch to dead class */
+							/*******************************************/
+
+							var deadFellows = document.getElementsByClassName("fellowship");
+							 for (var i = 0; i < deadFellows.length; i++) {
+							 	var dataNum = deadFellows[i].getAttribute('data-num');
+							 	switchClass(parseInt(dataNum), "dead", down, false, "skull");
+							 }
+							 var bg = document.getElementsByTagName("table")[0];
+							 bg.classList.remove("play");
+							 bg.classList.add("one-ring");
+							 bg.animationName = "fadeIn";
+
+							/*****************/
+							/* Add a message */
+							/*****************/
+
+							// alertDisplay("dead", orcNew[i]);
+
+							 i += 99; // exit loop
+
+						}
+
+						else {
+							switchClass(parseInt(oldDataNum), orcNew[i], down, true, "orc"); // old class to turn
+
+		 					switchClass(newDataNum, orcNew[i], down, false, "orc"); // new class to turn
+						}
+					
+		 				
+		 			}
+		 		}
+
+		 		newOrcCounter[orcNew[i]] += 1; // add a frame
+		 	}
+		 }
+
+	
+
 
     }
 
-    	//working.forEach(function(elem, index) {
-    	//	operate(elem[0]operate);
-    	// 	operate.shift();
-    	//});
-
-    	//if (interactions.up || interactions.down || interactions.left || interactions.right) { // if any key is pressed
-    		
-    		
-
-    		// for (var i = 0; i < working.length; i++) {
-    		// 	if (i === 0) {
-    		// 		coordFirst = getCoordinates(fellowship[i]); // store coordinates of first element
-    		// 		console.log("Element 0 Top:" + coordFirst.top + " Left:" + coordFirst.left);
-    		// 		move(interactions, fellowship[i]); // immediately invoke move()
-    		// 	}
-    		// 	else {
-    		// 		//gandalf's bounding box
-    		// 		var moveTop = fellowship[i].getBoundingClientRect().top;
-    		// 		var moveLeft = fellowship[i].getBoundingClientRect().left;
-    		// 		// subsequent characters in the chain: wait to arrive at first element's position before invoking move()
-    		// 		console.log("Element " + i + " Top:" + moveTop + " Left:" + moveLeft);
-    		// 		var temp = (moveTop == coordFirst.top && moveLeft == coordFirst.left);
-    		// 		console.log(temp);
-    		// 		if(moveTop == coordFirst.top && moveLeft == coordFirst.left) {
-    		// 			move(interactions,fellowship[i]);
-    		// 		}
-    		// 	}
-    		// }
-    	// }	
-    // }
-
-    /* When render is called from game.js [assets], execute these functions RECURSIVELY FRAME-BY-FRAME */
-    this.render = function(interactions, frameCounter) {
-
+    this.render = function (interactions, frameCounter) {
     	actualizeKey(interactions, frameCounter);
-
-    	//createNewFellowship(frameCounter);
-    	
     }
 
-    /* Initialize by fetching fellowship dom array and moving left */
+    function init() {
 
-    function init () {
-    	fellowship = document.getElementById('fellowship-board').childNodes; // get array of children of fellowship board
-    	// console.log(fellowship);
-    	
+    	// initialise message
     	for (var i = 0; i < fellowship.length; i++) {
-    		fellowship[i].style.top = "0px";
-    		fellowship[i].style.left = "0px";
-    		// console.log("Top:" + fellowship[i].style.top + " Left:" + fellowship[i].style.left);
 
-    		var tape = packer(interaction, Math.floor(picSize/settings.speed));
+    		/* CLONE interaction to get a separate object */
 
-    		message.push(tape);
-    		// move(interaction, fellowship[i]); 
+    		var clone = JSON.parse(JSON.stringify(interaction));
+    		message.push(clone);
     	}
-    	console.log("Initial key");
-    	console.log(message[0][0]);
-    	console.log(message[1][0]);
-    	console.log(message[2][0]);
+
+    	// initialise key history
+    	keyHistory.push(interaction);
+
+    	// initialise down movement for new fellowship members
+    	down = JSON.parse(JSON.stringify(interaction));
+    	down.left = false;
+    	down.down = true; 
     }
 
     init();
 }
+
