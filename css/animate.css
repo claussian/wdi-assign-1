@@ -222,6 +222,7 @@
 
 .tada {
   animation-name: tada;
+  animation-duration: 1s;
 }
 
 /* originally authored by Nick Pettit - https://github.com/nickpettit/glide */

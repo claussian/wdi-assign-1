@@ -12,7 +12,7 @@ font-weight: normal;
 src: url('../assets/first-order/firstv2p.woff') format('woff');
 }
 
-header h1 {
+#alert-board h1 {
 	font-family: 'First Order';
 	font-size: 3em;
 	margin-top: 20px;
@@ -20,7 +20,7 @@ header h1 {
 	text-align: center;
 }
 
-header h2 {
+#alert-board h2 {
 	font-family: 'First Order Plain';
 	font-size: 1.5em;
 	margin-top: 20px;
@@ -28,11 +28,15 @@ header h2 {
 	text-align: center;
 }
 
+h1.eden {
+	animation-name: "slideInRight";
+}
+
 header h2 span {
 	color: gold;
 }
 
-table {
+table.play {
   margin: 0 auto;
   border: 0;
 
@@ -81,6 +85,36 @@ td:hover{
 	border: 0;
 	animation-name: none;
 	animation-duration: 1s;
+}
+
+.skull {
+	background-color: transparent;
+	background-image: url('../assets/images/skull.png');
+	background-size: cover;
+	background-position: center;
+	border: 0;
+	animation-name: none;
+	animation-duration: 1s;
+}
+
+.one-ring {
+	margin: 0 auto;
+  	border: 0;
+
+	background-color: transparent;
+	background-image: url('../assets/images/one-ring.jpg');
+	background-size: cover;
+	background-position: center;
+}
+
+.gondor {
+	margin: 0 auto;
+  	border: 0;
+
+	background-color: transparent;
+	background-image: url('../assets/images/gondor.jpg');
+	background-size: cover;
+	background-position: center;
 }
 
 #null {

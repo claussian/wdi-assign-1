@@ -11,13 +11,13 @@
   	<link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-	<header>
-		<h1>~Save the Fellowship~</h1>
+	<header id="alert-board">
+		<h1 class="hell">~Save the Fellowship~</h1>
 		<h2>Help Frodo find his friends and reach Mount Doom~~~<br>Avoid the <span>Orcs!</span></h2>
 	</header>
 	<div class="container" id="game-board">
 		<div class="row">
-			<table>
+			<table class="play">
     			<tbody0>
       				<tr>
         				<td data-num="0" class="empty"></td>
@@ -102,6 +102,10 @@
 	<script type="text/javascript" src="js/orc-cheat.js"></script>
 	<script type="text/javascript" src="js/fellowship-cheat.js"></script>
   	<script src = "js/game-cheat.js" async></script>
+  	<script type="text/template" id="hit">~Found {{fellowship}}~</script>
+  	<script type="text/template" id="secondHead">Help Frodo find his friends and reach Mount Doom~~~<br>Avoid the <span>Orcs!</span></script>
+  	<script type="text/template" id="dead">~The Fellowship is broken~</script>
+  	<script type="text/template" id="win">~The Fellowship is saved~</script>
 	<audio id="audio-theme">
 	<source src="assets/aknifeinthedark_theme.mp3" type="audio/mpeg">
 	</audio>

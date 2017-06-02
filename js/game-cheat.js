@@ -6,6 +6,8 @@
    settings.gravity = 3;
    settings.speed = 2;
    settings.wall = true;
+   settings.orcs = false;
+   settings.disable = false;
 
 
    // World
@@ -112,7 +114,7 @@
               };
             })();
 
-            var framesToSkip = 50;
+            var framesToSkip = 40;
             var counter = 0;
             
             (function animloop(){
