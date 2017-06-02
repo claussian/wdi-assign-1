@@ -7,6 +7,6 @@ Find and grab the rest of the fellowship members while avoiding the approaching 
 
 Outstanding issues:
 
-..*css animations not animating on the second move and fellowship member onwards.
+* css animations not animating on the second move and fellowship member onwards.
 
-..*header css animation not animating
+* header css animation not animating
