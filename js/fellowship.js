@@ -481,7 +481,9 @@ var Fellowship = function(settings) {
 						bg.classList.add("gondor");
 						bg.animationName = "fadeIn";
 
+						settings.disable = true;
 						i += fellowship.length; // exit loop
+
 					}
 					else {
 						alertDisplay("hit",fellowship[i]);

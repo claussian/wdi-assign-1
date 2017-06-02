@@ -120,7 +120,7 @@
               };
             })();
 
-            var framesToSkip = 50;
+            var framesToSkip = 45;
             var counter = 0;
             
             (function animloop(){
