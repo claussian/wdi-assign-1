@@ -274,7 +274,8 @@ var Fellowship = function(settings) {
     	}
     	// firstM.
     	alertBoard.appendChild(firstM);
-    	firstM.className = "eden";	
+    	firstM.classList.add("animated");
+    	firstM.classList.add("tada");	
     	// firstM.style.animationName = "slideInRight";
     	//console.log(firstM);
     	

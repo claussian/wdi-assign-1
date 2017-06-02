@@ -28,9 +28,10 @@ src: url('../assets/first-order/firstv2p.woff') format('woff');
 	text-align: center;
 }
 
-h1.eden {
-	animation-name: "slideInRight";
-}
+/*. {
+  animation-name: slideInDown;
+  animation:
+}*/
 
 header h2 span {
 	color: gold;
