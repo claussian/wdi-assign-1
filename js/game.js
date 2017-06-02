@@ -6,7 +6,7 @@
    settings.gravity = 3;
    settings.speed = 2;
    settings.wall = true;
-   settings.orcs = false;
+   settings.orcs = true;
    settings.disable = false;
 
 
