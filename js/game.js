@@ -41,6 +41,12 @@
 
       });
 
+      document.getElementById('godmode').addEventListener('click', function(event){
+
+        settings.orcs = false;
+
+      });
+
       document.addEventListener('keydown', function(event){
         var keyName = event.key;
 
@@ -114,7 +120,7 @@
               };
             })();
 
-            var framesToSkip = 40;
+            var framesToSkip = 50;
             var counter = 0;
             
             (function animloop(){

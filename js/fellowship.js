@@ -240,6 +240,8 @@ var Fellowship = function(settings) {
 
     	cell.style.animationName = animate(interaction, old);  // set animation after
 
+    	// var animationName = animate(interaction, old);
+
     	if (old) { // if old cell, change id to null
     		removeAllClasses(cell);						// method to trigger animation 
     		cell.classList.add("empty");
@@ -248,6 +250,8 @@ var Fellowship = function(settings) {
     	else { // if new cell, change id to the fellowship or orc element
     		removeAllClasses(cell);
     		cell.classList.add(className);
+    		// cell.classList.add("animated");
+    		// cell.classList.add(animationName);
     		cell.setAttribute("id", fellowElement);
     	}   	
     }

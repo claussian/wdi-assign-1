@@ -33,6 +33,11 @@ src: url('../assets/first-order/firstv2p.woff') format('woff');
   animation:
 }*/
 
+.btn-container {
+	align-items: center;
+	margin: 10px;
+}
+
 header h2 span {
 	color: gold;
 }
