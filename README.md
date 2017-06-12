@@ -11,4 +11,8 @@ Outstanding issues:
 
 * css animations not animating on the second move and fellowship member onwards.
 
+<<<<<<< HEAD
 * snake breaks when keystroke changes too quickly
+=======
+* Snake breaks if keystrokes are too quick
+>>>>>>> master
