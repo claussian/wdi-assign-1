@@ -5,8 +5,14 @@ WDI assignment 1: LOTR snake
 
 Find and grab the rest of the fellowship members while avoiding the approaching orcs.
 
+https://claussian.github.io/wdi-assign-1/
+
 Outstanding issues:
 
 * css animations not animating on the second move and fellowship member onwards.
 
-* header css animation not animating
+<<<<<<< HEAD
+* snake breaks when keystroke changes too quickly
+=======
+* Snake breaks if keystrokes are too quick
+>>>>>>> master
