@@ -14,8 +14,11 @@
 <body>
 	<header id="alert-board">
 		<h1 class="animated fadeIn">~Save the Fellowship~</h1>
-		<h2 class="animated fadeIn">Help Frodo find his friends and reach Mount Doom~~~<br>Avoid the <span>Orcs!</span></h2>
+		<h2 class="animated fadeIn">Help Frodo find all 8 of his friends and lead them to safety~~~<br>Avoid the <span>Orcs</span> and <span>Walls!</span></h2>
+		<p>You have one chance at the start<br>Press Godmode and disable the orcs<p>
+		<h5><a href="#"><button type="button" id="godmode">Godmode</button></a></h5>
 	</header>
+
 	<div class="container" id="game-board">
 		<div class="row">
 			<table class="play">
@@ -24,9 +27,9 @@
         				<td data-num="0" class="empty"></td>
         				<td data-num="1" class="empty"></td>
         				<td data-num="2" class="empty"></td>
-        				<td data-num="3" class="empty"></td>
-        				<td data-num="4" class="empty"></td>
-        				<td data-num="5" class="empty"></td>
+								<td data-num="3" class="fellowship" id="gandalf"></td>
+        				<td data-num="4" class="fellowship" id="frodo"></td>
+        				<td data-num="5" class="fellowship" id="samwise"></td>
         				<td data-num="6" class="empty"></td>
       				</tr>
     			</tbody0>
@@ -90,17 +93,19 @@
       					<td data-num="42" class="empty"></td>
       					<td data-num="43" class="empty"></td>
         				<td data-num="44" class="empty"></td>
-        				<td data-num="45" class="fellowship" id="gandalf"></td>
-        				<td data-num="46" class="fellowship" id="frodo"></td>
-        				<td data-num="47" class="fellowship" id="samwise"></td>
+        				<td data-num="45" class="empty"></td>
+        				<td data-num="46" class="empty"></td>
+        				<td data-num="47" class="empty"></td>
         				<td data-num="48" class="empty"></td>
       				</tr>
     			</tbody6>
   			</table>
   		</div>
-      <div class="row">
-      <div class="col-md-6 col-md-offset-3 btn-container">
-      <button type="button" class="btn btn-primary" id="godmode">Godmode</button>
+			<div id="footer-note" class="row">
+				<div class="col-md-6 offset-md-3 footer-container">
+					<h5>A WDI-10 project by Hanif Samad. This game teaches you a lot about Javascript copy by reference! Debug this game with me on <a href="https://github.com/claussian/wdi-assign-1" target="_blank">Github</a></h5>
+				</div>
+			</div>
       </div>
       </div>
 	</div>
@@ -109,7 +114,7 @@
 	<script type="text/javascript" src="js/fellowship.js"></script>
   	<script src = "js/game.js" async></script>
   	<script type="text/template" id="hit">~Found {{fellowship}}~</script>
-  	<script type="text/template" id="secondHead">Help Frodo find his friends and reach Mount Doom~~~<br>Avoid the <span>Orcs!</span></script>
+  	<script type="text/template" id="secondHead">Help Frodo find all 8 of his friends and lead them to safety~~~<br>Avoid the <span>Orcs</span> and <span>Walls!</span></script>
   	<script type="text/template" id="dead">~The Fellowship is broken~</script>
   	<script type="text/template" id="win">~The Fellowship is saved~</script>
 	<audio id="audio-theme">

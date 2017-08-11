@@ -13,5 +13,4 @@ Outstanding issues:
 
 * snake breaks when keystroke changes too quickly
 
-* Snake breaks if keystrokes are too quick
-
+* Snake breaks if keystrokes are too quickly
