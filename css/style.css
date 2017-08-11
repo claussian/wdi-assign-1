@@ -10,6 +10,16 @@ font-family: 'First Order Plain';
 font-style: normal;
 font-weight: normal;
 src: url('../assets/first-order/Firstv2p.woff') format('woff');
+<<<<<<< HEAD
+=======
+}
+
+body {
+	background-image: url('../assets/images/mapnew_opacity60.png');
+  background-size: cover;
+  background-position: center;
+	height: 100vh;
+>>>>>>> added stylings and godmode description; footer note
 }
 
 #alert-board h1 {
@@ -18,14 +28,31 @@ src: url('../assets/first-order/Firstv2p.woff') format('woff');
 	margin-top: 20px;
 	margin-bottom: 20px;
 	text-align: center;
+	text-shadow: 0 0 10px #fff;
+	color: #000;
 }
 
-#alert-board h2 {
+#alert-board h2, #alert-board p {
 	font-family: 'First Order Plain';
 	font-size: 1.5em;
 	margin-top: 20px;
 	margin-bottom: 20px;
 	text-align: center;
+	text-shadow: 0 0 10px #fff;
+	color: #000;
+}
+
+#alert-board p {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+#footer-note {
+	text-align: center;
+}
+
+.footer-container {
+	margin-left: 25%;
 }
 
 /*. {
@@ -39,17 +66,34 @@ src: url('../assets/first-order/Firstv2p.woff') format('woff');
 }
 
 header h2 span {
+	color: #CB181D;
+}
+
+#alert-board h5 {
+	text-align: center;
+	color: #000;
+}
+
+#alert-board button {
+	color: #000;
+}
+
+#alert-board a:active #alert-board button {
 	color: gold;
+}
+
+#godmode {
+	display: inline-block;
 }
 
 table.play {
   margin: 0 auto;
-  border: 0;
+  border: 5px dashed #643323;
 
   background-color: transparent;
-  background-image: url('../assets/images/map_opacity40.jpg');
+  /*background-image: url('../assets/images/map_opacity40.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: center;*/
 }
 
 td {
@@ -58,7 +102,7 @@ td {
   text-align: center;
   font-size: 8em;
   box-sizing:border-box;
-  
+
 }
 
 td:hover{
@@ -95,7 +139,7 @@ td:hover{
 
 .skull {
 	background-color: transparent;
-	background-image: url('../assets/images/skull.png');
+	background-image: url('../assets/images/skull-white.png');
 	background-size: cover;
 	background-position: center;
 	border: 0;
@@ -108,7 +152,7 @@ td:hover{
   	border: 0;
 
 	background-color: transparent;
-	background-image: url('../assets/images/one-ring.jpg');
+	background-image: url('../assets/images/mordor.jpg');
 	background-size: cover;
 	background-position: center;
 }
@@ -118,7 +162,7 @@ td:hover{
   	border: 0;
 
 	background-color: transparent;
-	background-image: url('../assets/images/gondor.jpg');
+	background-image: url('../assets/images/rohirrim.jpg');
 	background-size: cover;
 	background-position: center;
 }
@@ -126,7 +170,7 @@ td:hover{
 #null {
 	background-image: none;
 }
-	
+
 #gandalf {
 	background-image: url('../assets/images/gandalf_cartoon.png');
 }

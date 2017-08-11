@@ -45,7 +45,7 @@ var Fellowship = function(settings) {
 		}
         if(instruction.left) {
           	wall = [0,7,14,21,28,35,42];
-        } 
+        }
         if(instruction.right) {
         	wall = [6,13,20,27,34,41,48];
         }
@@ -53,7 +53,7 @@ var Fellowship = function(settings) {
         	wall = [42,43,44,45,46,47,48];
         }
 
-        return wall.indexOf(num) > -1 ? true : false;      
+        return wall.indexOf(num) > -1 ? true : false;
 	}
 
 	/* Check for illegal moves. Up cannot be followed by down and vice-versa; ditto left-right */
@@ -119,7 +119,7 @@ var Fellowship = function(settings) {
     	// added new orc
     	orcNew.push(JSON.parse(JSON.stringify(orcId)));
 
-    	orcIndex ++; 
+    	orcIndex ++;
 
 	}
 
@@ -172,12 +172,12 @@ var Fellowship = function(settings) {
 				console.log("orc cell: " + parseInt(targetCell_2[i].getAttribute('data-num')));
 				console.log("snake cell: " + parseInt(targetCell_1.getAttribute('data-num')));
 			}
-			
+
 			if (parseInt(targetCell_2[i].getAttribute('data-num')) == parseInt(targetCell_1.getAttribute('data-num'))) {
 				match++;
 			}
 		}
-		
+
 		return match;
 	}
 
@@ -229,13 +229,13 @@ var Fellowship = function(settings) {
     /* Switch the faces of old and new data-num; do not couple the switches yet  */
 
     function switchClass (dataNum, fellowElement, interaction, old, className) {
-    	
+
     	var cell;
-    	
+
     	// get the cell which needs to be changed
 
     	cell = cells[dataNum];
-    	
+
     	// console.log(cell.style.animationName);
 
     	cell.style.animationName = animate(interaction, old);  // set animation after
@@ -243,7 +243,7 @@ var Fellowship = function(settings) {
     	// var animationName = animate(interaction, old);
 
     	if (old) { // if old cell, change id to null
-    		removeAllClasses(cell);						// method to trigger animation 
+    		removeAllClasses(cell);						// method to trigger animation
     		cell.classList.add("empty");
     		cell.removeAttribute("id");
     	}
@@ -253,7 +253,7 @@ var Fellowship = function(settings) {
     		// cell.classList.add("animated");
     		// cell.classList.add(animationName);
     		cell.setAttribute("id", fellowElement);
-    	}   	
+    	}
     }
 
 	/* Alert board */
@@ -268,7 +268,7 @@ var Fellowship = function(settings) {
 
 		var scrawl = document.getElementById(type).textContent; // get the message to display from html
 		console.log(scrawl);
-    	
+
     	var firstM = document.createElement('h1');
     	if (type == "hit") {
     		firstM.textContent = scrawl.replace("{{fellowship}}", member); // replace with fellowship member's name
@@ -278,11 +278,11 @@ var Fellowship = function(settings) {
     	}
     	// firstM.
     	alertBoard.appendChild(firstM);
-    	firstM.classList.add("animated");
-    	firstM.classList.add("tada");	
+    	// firstM.classList.add("animated");
+    	// firstM.classList.add("fadeOut");
     	// firstM.style.animationName = "slideInRight";
     	//console.log(firstM);
-    	
+
 
     	var secondM = document.createElement('h2'); // re-append secondary message
     	secondM.innerHTML = document.getElementById("secondHead").innerHTML;
@@ -296,7 +296,7 @@ var Fellowship = function(settings) {
     /* Function to invoke every cycle or when key is pressed, rendered per frame */
 
     function actualizeKey(interactions, frameCounter, fellowIndex) {
-    	
+
     	console.log(frameCounter);
 
     	/*********************/
@@ -312,7 +312,7 @@ var Fellowship = function(settings) {
     	/**********************************************/
 
     	// if (frameCounter % 13 == 0 && fellowshipNew.length > 0) { // resulted in buggy behaviour where collision is detected just before element is destroyed
-    	// 	randomRemoveFellowship(); 
+    	// 	randomRemoveFellowship();
     	// }
 
     	/******************/
@@ -332,16 +332,16 @@ var Fellowship = function(settings) {
 
     		// CLONE interaction to get a new object
 
-    		var clone = JSON.parse(JSON.stringify(interactions));
+    		var cloneB = JSON.parse(JSON.stringify(interactions));
 
     		// push new key to the head of the key history
-    		keyHistory.unshift(clone);
+    		keyHistory.unshift(cloneB);
 
     		// remove new key if illegal move
     		if (checkIllegalMove(keyHistory[0], keyHistory[1])) {
     			keyHistory.shift();
     		}
-  		
+
     		console.log("Key pressed!");
 
     		interactions.keyup = false;
@@ -375,7 +375,7 @@ var Fellowship = function(settings) {
 			/******************/
 
 			if (wallChecker(message[0], parseInt(oldDataNum))) { // Hit the wall; stop game
-				
+
 				/********************/
 				/* Append a message */
 				/********************/
@@ -392,14 +392,14 @@ var Fellowship = function(settings) {
 				// 	 	var dataNum = deadFellows[i].getAttribute('data-num');
 				// 	 	switchClass(parseInt(dataNum), "dead", down, false, "skull");
 				// 	 }
-				var bg = document.getElementsByTagName("table")[0];
+				var bg = document.getElementsByTagName("body")[0];
 				bg.classList.remove("play");
 				bg.classList.add("one-ring");
 				bg.animationName = "fadeIn";
 
 				// proceed = false;
 				i += fellowship.length; // exit the loop so that subsequent fellowship members do not execute the next move
-				settings.disable = true; 
+				settings.disable = true;
 
 			}
 
@@ -429,10 +429,10 @@ var Fellowship = function(settings) {
 					/* Append a new interaction for the new guy */
 					/********************************************/
 
-					var clone = JSON.parse(JSON.stringify(keyHistory[0])); // pass a copy of the direction of the original snakehead
+					var cloneC = JSON.parse(JSON.stringify(keyHistory[0])); // pass a copy of the direction of the original snakehead
 
    					// push new key to the head of the key history
-    				keyHistory.unshift(clone);
+    				keyHistory.unshift(cloneC);
 
 					message.unshift(keyHistory[0]);
 
@@ -444,10 +444,10 @@ var Fellowship = function(settings) {
 					/******************************/
 
 					if (wallChecker(message[0], parseInt(newDataNum))) { // Hit the wall; stop game
-				
+
 						console.log("Hit wall!");
 						// proceed = false;
-						i += fellowship.length; // exit the loop so that subsequent fellowship members do not execute the next move 
+						i += fellowship.length; // exit the loop so that subsequent fellowship members do not execute the next move
 
 					}
 					else {
@@ -476,7 +476,7 @@ var Fellowship = function(settings) {
 						// 	 	var dataNum = deadFellows[i].getAttribute('data-num');
 						// 	 	switchClass(parseInt(dataNum), "dead", down, false, "skull");
 						// 	 }
-						var bg = document.getElementsByTagName("table")[0];
+						var bg = document.getElementsByTagName("body")[0];
 						bg.classList.remove("play");
 						bg.classList.add("gondor");
 						bg.animationName = "fadeIn";
@@ -488,20 +488,20 @@ var Fellowship = function(settings) {
 					else {
 						alertDisplay("hit",fellowship[i]);
 					}
-					
+
 				}
 
 				else { // no collision
 
 				switchClass(parseInt(oldDataNum), fellowship[i], message[i], true, "fellowship"); // old class to turn
 
-				
+
 				switchClass(newDataNum, fellowship[i], message[i], false, "fellowship"); // new class to turn
 
 				}
-				
 
-			}									
+
+			}
 
 		}
 
@@ -518,7 +518,7 @@ var Fellowship = function(settings) {
 		 			var oldDataNum = document.getElementById(orcNew[i]).getAttribute('data-num');
 
 		 			if (wallChecker(down, parseInt(oldDataNum))) {
-						
+
 		 				console.log("removing " + orcNew[i]); // change the class first
 		 				removeOrc(orcNew[i]);
 
@@ -528,7 +528,7 @@ var Fellowship = function(settings) {
 
 		 			else {
 		 				// Move down each newly spawned and unappended orc element
-		 				
+
 		 				var newDataNum = move(down, parseInt(oldDataNum)); // intended cell destination
 		 				console.log("new orc cell: " + newDataNum);
 
@@ -548,7 +548,7 @@ var Fellowship = function(settings) {
 							 	var dataNum = deadFellows[i].getAttribute('data-num');
 							 	switchClass(parseInt(dataNum), "dead", down, false, "skull");
 							 }
-							 var bg = document.getElementsByTagName("table")[0];
+							 var bg = document.getElementsByTagName("body")[0];
 							 bg.classList.remove("play");
 							 bg.classList.add("one-ring");
 							 bg.animationName = "fadeIn";
@@ -568,8 +568,8 @@ var Fellowship = function(settings) {
 
 		 					switchClass(newDataNum, orcNew[i], down, false, "orc"); // new class to turn
 						}
-					
-		 				
+
+
 		 			}
 		 		}
 
@@ -577,7 +577,7 @@ var Fellowship = function(settings) {
 		 	}
 		 }
 
-	
+
 
 
     }
@@ -593,8 +593,8 @@ var Fellowship = function(settings) {
 
     		/* CLONE interaction to get a separate object */
 
-    		var clone = JSON.parse(JSON.stringify(interaction));
-    		message.push(clone);
+    		var cloneA = JSON.parse(JSON.stringify(interaction));
+    		message.push(cloneA);
     	}
 
     	// initialise key history
@@ -603,9 +603,8 @@ var Fellowship = function(settings) {
     	// initialise down movement for new fellowship members
     	down = JSON.parse(JSON.stringify(interaction));
     	down.left = false;
-    	down.down = true; 
+    	down.down = true;
     }
 
     init();
 }
-
